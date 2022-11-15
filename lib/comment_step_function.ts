@@ -137,9 +137,8 @@ export class CommentStepFunction extends Construct {
                 postDisqusCommentTask
                   .addRetry({
                     errors: ["DisqusTimeout"],
-                    interval: cdk.Duration.seconds(3),
-                    maxAttempts: 2,
-                    backoffRate: 1,
+                    interval: cdk.Duration.seconds(5),
+                    maxAttempts: 3,
                   })
                   .addCatch(notifyUnrecoverableTask)
                   .next(end)
