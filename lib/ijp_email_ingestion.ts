@@ -4,14 +4,12 @@ import * as ses from "aws-cdk-lib/aws-ses";
 import * as actions from "aws-cdk-lib/aws-ses-actions";
 
 export class EmailIngestion extends Construct {
-  public Topic: sns.Topic;
+  public Topic = new sns.Topic(this, "Topic");
 
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
     if (!process.env.RECIPIENT_EMAIL) return;
-
-    this.Topic = new sns.Topic(this, "Topic");
 
     const ruleSet = new ses.ReceiptRuleSet(this, "RuleSet");
 
