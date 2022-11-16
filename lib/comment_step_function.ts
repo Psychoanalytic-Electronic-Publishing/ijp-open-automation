@@ -86,6 +86,10 @@ export class CommentStepFunction extends Construct {
       runtime: lambda.Runtime.NODEJS_16_X,
       handler: "main",
       entry: path.join(__dirname, "/../lambda/postDisqusComment/index.ts"),
+      environment: {
+        DISQUS_SECRET: process.env.DISQUS_SECRET || "",
+        DISQUS_PUBLIC: process.env.DISQUS_PUBLIC || "",
+      },
     });
 
     const postDisqusCommentTask = new tasks.LambdaInvoke(
