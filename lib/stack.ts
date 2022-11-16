@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { CommentStepFunction } from "./comment_step_function";
