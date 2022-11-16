@@ -9,7 +9,9 @@ export class EmailIngestion extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    if (!process.env.RECIPIENT_EMAIL) return;
+    if (!process.env.RECIPIENT_EMAIL) {
+      throw new Error("Missing required environment variable: RECIPIENT_EMAIL");
+    }
 
     const ruleSet = new ses.ReceiptRuleSet(this, "RuleSet");
 

@@ -12,6 +12,14 @@ export class CommentStepFunction extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
+    if (
+      !process.env.DISQUS_SECRET ||
+      !process.env.DISQUS_PUBLIC ||
+      !process.env.DISQUS_FORUM
+    ) {
+      throw new Error("Missing one or more required environment variable");
+    }
+
     // PARSE SNS EMAIL NOTIFICATION
     const parseEmailNotification = new NodejsFunction(
       this,
@@ -87,9 +95,9 @@ export class CommentStepFunction extends Construct {
       handler: "main",
       entry: path.join(__dirname, "/../lambda/postDisqusComment/index.ts"),
       environment: {
-        DISQUS_SECRET: process.env.DISQUS_SECRET || "",
-        DISQUS_PUBLIC: process.env.DISQUS_PUBLIC || "",
-        DISQUS_FORUM: process.env.DISQUS_FORUM || "",
+        DISQUS_SECRET: process.env.DISQUS_SECRET,
+        DISQUS_PUBLIC: process.env.DISQUS_PUBLIC,
+        DISQUS_FORUM: process.env.DISQUS_FORUM,
       },
     });
 
