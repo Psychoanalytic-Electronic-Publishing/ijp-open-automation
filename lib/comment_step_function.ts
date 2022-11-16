@@ -131,28 +131,30 @@ export class CommentStepFunction extends Construct {
     const end = new sfn.Succeed(this, "Success");
 
     // WORKFLOW DEFINTION
-    const defintion = parseEmailNotificationTask.next(
-      hasIJPOConsent
-        .when(
-          sfn.Condition.stringMatches("$.subject", "*@yes"),
-          determineVersionStatusTask.next(
-            isVersionLive
-              .when(
-                sfn.Condition.booleanEquals("$.isLive", true),
-                postDisqusCommentTask
-                  .addRetry({
-                    errors: ["DisqusTimeout"],
-                    interval: cdk.Duration.seconds(5),
-                    maxAttempts: 3,
-                  })
-                  .addCatch(notifyUnrecoverableTask)
-                  .next(end)
-              )
-              .otherwise(wait1Day.next(determineVersionStatusTask))
+    const defintion = parseEmailNotificationTask
+      .addCatch(notifyUnrecoverableTask)
+      .next(
+        hasIJPOConsent
+          .when(
+            sfn.Condition.stringMatches("$.subject", "*@yes"),
+            determineVersionStatusTask.addCatch(notifyUnrecoverableTask).next(
+              isVersionLive
+                .when(
+                  sfn.Condition.booleanEquals("$.isLive", true),
+                  postDisqusCommentTask
+                    .addRetry({
+                      errors: ["DisqusTimeout"],
+                      interval: cdk.Duration.seconds(5),
+                      maxAttempts: 3,
+                    })
+                    .addCatch(notifyUnrecoverableTask)
+                    .next(end)
+                )
+                .otherwise(wait1Day.next(determineVersionStatusTask))
+            )
           )
-        )
-        .otherwise(end)
-    );
+          .otherwise(end)
+      );
 
     // Create the statemachine
     this.StateMachine = new sfn.StateMachine(this, "StateMachine", {
