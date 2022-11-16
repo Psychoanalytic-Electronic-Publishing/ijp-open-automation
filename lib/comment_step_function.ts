@@ -12,8 +12,8 @@ export class CommentStepFunction extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    // DETERMINE IJPO CONSENT STATUS
-    const determineConsentStatus = new NodejsFunction(
+    // PARSE SNS EMAIL NOTIFICATION
+    const parseEmailNotification = new NodejsFunction(
       this,
       "determine-ijpo-consent-status",
       {
@@ -23,16 +23,16 @@ export class CommentStepFunction extends Construct {
         handler: "main",
         entry: path.join(
           __dirname,
-          "/../lambda/determineConsentStatus/index.ts"
+          "/../lambda/parseEmailNotification/index.ts"
         ),
       }
     );
 
-    const determineConsentStatusTask = new tasks.LambdaInvoke(
+    const parseEmailNotificationTask = new tasks.LambdaInvoke(
       this,
-      "Check for IJPO consent",
+      "Parse email notification",
       {
-        lambdaFunction: determineConsentStatus,
+        lambdaFunction: parseEmailNotification,
         outputPath: "$.Payload",
       }
     );
@@ -66,7 +66,7 @@ export class CommentStepFunction extends Construct {
 
     const determineVersionStatusTask = new tasks.LambdaInvoke(
       this,
-      "Check if the IJPO article version is live on PEP-Web",
+      "Check article version status",
       {
         lambdaFunction: determineVersionStatus,
         outputPath: "$.Payload",
@@ -126,7 +126,7 @@ export class CommentStepFunction extends Construct {
     const end = new sfn.Succeed(this, "Success");
 
     // WORKFLOW DEFINTION
-    const defintion = determineConsentStatusTask.next(
+    const defintion = parseEmailNotificationTask.next(
       hasIJPOConsent
         .when(
           sfn.Condition.booleanEquals("$.hasConsent", true),
@@ -143,7 +143,7 @@ export class CommentStepFunction extends Construct {
                   .addCatch(notifyUnrecoverableTask)
                   .next(end)
               )
-              .otherwise(wait1Day.next(determineConsentStatusTask))
+              .otherwise(wait1Day.next(determineVersionStatusTask))
           )
         )
         .otherwise(end)
