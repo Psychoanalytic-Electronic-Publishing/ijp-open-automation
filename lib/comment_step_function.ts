@@ -89,6 +89,7 @@ export class CommentStepFunction extends Construct {
       environment: {
         DISQUS_SECRET: process.env.DISQUS_SECRET || "",
         DISQUS_PUBLIC: process.env.DISQUS_PUBLIC || "",
+        DISQUS_FORUM: process.env.DISQUS_FORUM || "",
       },
     });
 
