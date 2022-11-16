@@ -12,8 +12,9 @@
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.108",
+    "@types/axios": "^0.14.0",
     "@types/crypto-js": "^4.1.1",
-    "@types/jest": "^27.5.2",
+    "@types/jest": "^29.2.3",
     "@types/mailparser": "^3.4.0",
     "@types/node": "10.17.27",
     "@types/prettier": "2.6.0",
@@ -21,13 +22,15 @@
     "aws-cdk": "2.50.0",
     "aws-lambda": "^1.0.7",
     "esbuild": "^0.15.13",
-    "jest": "^27.5.1",
-    "ts-jest": "^27.1.4",
+    "jest": "^29.3.1",
+    "remove": "^0.1.5",
+    "ts-jest": "^29.0.3",
     "ts-node": "^10.9.1",
-    "typescript": "~3.9.7"
+    "typescript": "^4.9.3"
   },
   "dependencies": {
     "aws-cdk-lib": "2.50.0",
+    "axios": "^1.2.0-alpha.1",
     "constructs": "^10.0.0",
     "crypto-js": "^4.1.1",
     "mailparser": "^3.5.0",
