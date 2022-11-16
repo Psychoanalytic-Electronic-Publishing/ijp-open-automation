@@ -129,7 +129,7 @@ export class CommentStepFunction extends Construct {
     const defintion = parseEmailNotificationTask.next(
       hasIJPOConsent
         .when(
-          sfn.Condition.booleanEquals("$.hasConsent", true),
+          sfn.Condition.stringMatches("$.subject", "*@yes"),
           determineVersionStatusTask.next(
             isVersionLive
               .when(
