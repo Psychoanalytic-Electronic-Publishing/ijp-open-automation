@@ -6,5 +6,5 @@ interface TestEvent {
 export async function main(event: TestEvent) {
   console.log("Event", event);
 
-  return { ...event, test: "Hello World" };
+  return { ...event, isLive: true };
 }
