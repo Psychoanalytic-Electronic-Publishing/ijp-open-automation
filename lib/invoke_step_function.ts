@@ -4,7 +4,6 @@ import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as iam from "aws-cdk-lib/aws-iam";
 import * as path from "path";
-import * as sns from "aws-cdk-lib/aws-sns";
 
 interface InvokeStepFunctionParams {
   stateMachineArn: string;
@@ -23,6 +22,7 @@ export class InvokeStepFunction extends Construct {
       this,
       "invoke-step-function",
       {
+        functionName: `${id}-invoke-comment-state-machine`,
         timeout: cdk.Duration.seconds(3),
         runtime: lambda.Runtime.NODEJS_16_X,
         handler: "main",
