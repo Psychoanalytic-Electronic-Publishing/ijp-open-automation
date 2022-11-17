@@ -5,6 +5,7 @@ import * as sfn from "aws-cdk-lib/aws-stepfunctions";
 import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import * as path from "path";
+import * as iam from "aws-cdk-lib/aws-iam";
 
 export class CommentStepFunction extends Construct {
   public StateMachine: sfn.StateMachine;
@@ -13,6 +14,8 @@ export class CommentStepFunction extends Construct {
     super(scope, id);
 
     if (
+      !process.env.EMAIL_NOTIFICATION_RECIPIENT ||
+      !process.env.EMAIL_NOTIFICATION_SENDER ||
       !process.env.DISQUS_SECRET ||
       !process.env.DISQUS_PUBLIC ||
       !process.env.DISQUS_FORUM
@@ -123,8 +126,22 @@ export class CommentStepFunction extends Construct {
           __dirname,
           "/../lambda/sendEmailNotification/index.ts"
         ),
+        environment: {
+          EMAIL_NOTIFICATION_RECIPIENT:
+            process.env.EMAIL_NOTIFICATION_RECIPIENT,
+          EMAIL_NOTIFICATION_SENDER: process.env.EMAIL_NOTIFICATION_SENDER,
+        },
       }
     );
+
+    // Create a policy statement to allow email sending
+    const sendEmailPolicy = new iam.PolicyStatement({
+      actions: ["ses:SendEmail", "ses:SendRawEmail"],
+      resources: ["*"],
+    });
+
+    // Attach the policy to the Lambda
+    sendEmailNotification.addToRolePolicy(sendEmailPolicy);
 
     const notifyUnrecoverableTask = new tasks.LambdaInvoke(
       this,

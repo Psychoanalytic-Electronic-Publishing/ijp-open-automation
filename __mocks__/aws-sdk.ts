@@ -9,3 +9,11 @@ const startExecutionFn = jest
 export class StepFunctions {
   startExecution = startExecutionFn;
 }
+
+const sendEmailFn = jest
+  .fn()
+  .mockImplementation(() => ({ promise: awsSdkPromiseResponse }));
+
+export class SES {
+  sendEmail = sendEmailFn;
+}

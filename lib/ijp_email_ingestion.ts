@@ -9,15 +9,17 @@ export class EmailIngestion extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    if (!process.env.RECIPIENT_EMAIL) {
-      throw new Error("Missing required environment variable: RECIPIENT_EMAIL");
+    if (!process.env.EMAIL_NOTIFICATION_SENDER) {
+      throw new Error(
+        "Missing required environment variable: EMAIL_NOTIFICATION_SENDER"
+      );
     }
 
     const ruleSet = new ses.ReceiptRuleSet(this, "RuleSet");
 
     // Create a rule for the recipient email address
     const awsRule = ruleSet.addRule("Rule", {
-      recipients: [process.env.RECIPIENT_EMAIL],
+      recipients: [process.env.EMAIL_NOTIFICATION_SENDER],
     });
 
     // Saves the received email to the S3 bucket
