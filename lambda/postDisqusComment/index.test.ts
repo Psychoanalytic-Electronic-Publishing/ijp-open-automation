@@ -24,7 +24,7 @@ describe("postDisqusComment", () => {
       articleId: "ijpopen.001.0001a",
       consent: "yes",
       text: "Hello, World!!!",
-    } as any;
+    };
 
     process.env.DISQUS_SECRET = "SECRET_KEY";
     process.env.DISQUS_PUBLIC = "PUBLIC_KEY";

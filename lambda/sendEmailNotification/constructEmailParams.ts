@@ -1,7 +1,8 @@
 import * as AWS from "aws-sdk";
+import { StepFunctionError } from ".";
 
 export const constructEmailParams = (
-  errorEvent: any
+  errorEvent: StepFunctionError
 ): AWS.SES.SendEmailRequest => {
   if (!process.env.EMAIL_NOTIFICATION_RECIPIENT) {
     throw new Error(

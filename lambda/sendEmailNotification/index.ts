@@ -3,7 +3,7 @@ import { constructEmailParams } from "./constructEmailParams";
 
 const ses = new AWS.SES();
 
-interface StepFunctionError {
+export interface StepFunctionError {
   Error: string;
   Cause: string;
 }
