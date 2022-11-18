@@ -12,6 +12,13 @@ jobs:
       matrix:
         node-version: [16.x]
 
+    env:
+      DISQUS_SECRET: ${{ secrets.DISQUS_SECRET }}
+      DISQUS_PUBLIC: ${{ secrets.DISQUS_PUBLIC }}
+      DISQUS_FORUM: ${{ secrets.DISQUS_FORUM }}
+      EMAIL_NOTIFICATION_SENDER: ${{ secrets.EMAIL_NOTIFICATION_SENDER }}
+      EMAIL_NOTIFICATION_RECIPIENT: ${{ secrets.EMAIL_NOTIFICATION_RECIPIENT }}
+
     steps:
       - uses: actions/checkout@v3
 
