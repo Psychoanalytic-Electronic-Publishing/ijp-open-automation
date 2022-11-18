@@ -22,7 +22,7 @@ describe("generateSignature", () => {
     const signature = generateSignature(user);
 
     expect(signature).toBe(
-      "eyJpZCI6IjMzODBlYzBmLWNhZTktNDkyNy1iOGQ0LWZjNWQwZmEwMTJmZCIsInVzZXJuYW1lIjoiVGVzdCBVc2VyIiwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIn0= 1df49f9f32fcd4bbba7d58684cf586d2c10f842b 1585695600"
+      "eyJpZCI6IjMzODBlYzBmLWNhZTktNDkyNy1iOGQ0LWZjNWQwZmEwMTJmZCIsInVzZXJuYW1lIjoiVGVzdCBVc2VyIiwiZW1haWwiOiJ0ZXN0QHRlc3QuY29tIn0= 908c3102d3d6f17ed6e27598eff7f7fb1585fd08 1585699200"
     );
   });
 

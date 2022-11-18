@@ -36,7 +36,7 @@ describe("postDisqusComment", () => {
     expect(postComment).toHaveBeenCalledWith(
       parsedEmailEvent.text,
       "thread1234",
-      "eyJpZCI6IjNjMTc0NmY2LWU2MzctNDJmYi04M2MwLTZiNGQ4OTE4MTUzZSIsInVzZXJuYW1lIjoiSUpQTyBPcGVuIENvbW1lbnRzIiwiZW1haWwiOiJwbGFjZWhvbGRlckBpanBfZW1haWwuY29tIn0= 24c9a75c5c4714f2994dbd513dcae2f139fd68cc 1585695600"
+      "eyJpZCI6IjNjMTc0NmY2LWU2MzctNDJmYi04M2MwLTZiNGQ4OTE4MTUzZSIsInVzZXJuYW1lIjoiSUpQTyBPcGVuIENvbW1lbnRzIiwiZW1haWwiOiJwbGFjZWhvbGRlckBpanBfZW1haWwuY29tIn0= dc81b2301a433701318874c4d0b75d3d1aff7b7c 1585699200"
     );
   });
 });
