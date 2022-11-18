@@ -13,9 +13,7 @@ export async function main(event: any) {
 
   const signature = generateSignature(AUTOMATED_COMMENT_USER);
 
-  const articleId = event.subject.split("@")[0].toLowerCase();
-
-  const thread = await getThreadFromId(articleId);
+  const thread = await getThreadFromId(event.articleId);
 
   await postComment(event.text, thread, signature);
 }

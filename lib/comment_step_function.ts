@@ -161,7 +161,7 @@ export class CommentStepFunction extends Construct {
       .next(
         hasIJPOConsent
           .when(
-            sfn.Condition.stringMatches("$.subject", "*@yes"),
+            sfn.Condition.stringEquals("$.consent", "yes"),
             determineVersionStatusTask.addCatch(notifyUnrecoverableTask).next(
               isVersionLive
                 .when(
