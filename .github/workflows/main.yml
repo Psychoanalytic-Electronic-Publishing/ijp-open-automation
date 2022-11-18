@@ -1,4 +1,4 @@
-name: CI/CD - pushes to main
+name: CI/CD - Test, lint and deploy
 
 on:
   push:

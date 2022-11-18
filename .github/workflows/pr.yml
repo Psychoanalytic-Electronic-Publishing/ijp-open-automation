@@ -1,4 +1,4 @@
-name: CI - PR against main
+name: CI - Test and lint
 
 on:
   pull_request:
