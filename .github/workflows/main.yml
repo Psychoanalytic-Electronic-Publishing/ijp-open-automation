@@ -18,6 +18,9 @@ jobs:
       DISQUS_FORUM: ${{ secrets.DISQUS_FORUM }}
       EMAIL_NOTIFICATION_SENDER: ${{ secrets.EMAIL_NOTIFICATION_SENDER }}
       EMAIL_NOTIFICATION_RECIPIENT: ${{ secrets.EMAIL_NOTIFICATION_RECIPIENT }}
+      SOLR_HOST: ${{ secrets.SOLR_HOST }}
+      SOLR_PORT: ${{ secrets.SOLR_PORT }}
+      SOLR_DOC_CORE: ${{ secrets.SOLR_DOC_CORE }}
 
     steps:
       - uses: actions/checkout@v3
@@ -31,7 +34,7 @@ jobs:
         run: npm ci
       - name: Test
         run: npm test
-      - name: Test
+      - name: Lint
         run: npm run lint
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@master
