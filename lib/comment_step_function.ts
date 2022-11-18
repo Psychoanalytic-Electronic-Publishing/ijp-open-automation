@@ -18,7 +18,10 @@ export class CommentStepFunction extends Construct {
       !process.env.EMAIL_NOTIFICATION_SENDER ||
       !process.env.DISQUS_SECRET ||
       !process.env.DISQUS_PUBLIC ||
-      !process.env.DISQUS_FORUM
+      !process.env.DISQUS_FORUM ||
+      !process.env.SOLR_HOST ||
+      !process.env.SOLR_PORT ||
+      !process.env.SOLR_DOC_CORE
     ) {
       throw new Error("Missing one or more required environment variable");
     }
@@ -65,13 +68,18 @@ export class CommentStepFunction extends Construct {
       "determine-ijpo-version-status",
       {
         functionName: `${id}-version-status`,
-        timeout: cdk.Duration.seconds(3),
+        timeout: cdk.Duration.seconds(10),
         runtime: lambda.Runtime.NODEJS_16_X,
         handler: "main",
         entry: path.join(
           __dirname,
           "/../lambda/determineVersionStatus/index.ts"
         ),
+        environment: {
+          SOLR_HOST: process.env.SOLR_HOST,
+          SOLR_PORT: process.env.SOLR_PORT,
+          SOLR_DOC_CORE: process.env.SOLR_DOC_CORE,
+        },
       }
     );
 
