@@ -8,8 +8,8 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
+    "test:watch": "jest --watchAll",
     "lint": "eslint .",
-    "cdk": "cdk",
     "deploy:ci": "cdk deploy --all --require-approval never"
   },
   "devDependencies": {
