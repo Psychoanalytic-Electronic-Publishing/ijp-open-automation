@@ -241,6 +241,8 @@ To invoke individual Lambdas directly on your machine, you can use the AWS SAM C
 
 It's also possible to execute entire Step Functions locally. Please follow the [Testing Step Functions State Machines Locally](https://docs.aws.amazon.com/step-functions/latest/dg/sfn-local.html) guide on AWS if you're interested in trying it out.
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Example Step Function Payload
 
 If you want to manually trigger a step function for testing / debugging, you can use the following payload stub:
