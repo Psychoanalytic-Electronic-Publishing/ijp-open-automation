@@ -5,5 +5,5 @@ module.exports = {
   transform: {
     "^.+\\.ts?$": "ts-jest",
   },
-  globalSetup: "./global-setup.ts",
+  globalSetup: "./global-setup.js",
 };
