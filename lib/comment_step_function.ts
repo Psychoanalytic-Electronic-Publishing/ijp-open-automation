@@ -169,7 +169,7 @@ export class CommentStepFunction extends Construct {
       .next(
         hasIJPOConsent
           .when(
-            sfn.Condition.stringEquals("$.consent", "yes"),
+            sfn.Condition.booleanEquals("$.consent", true),
             determineVersionStatusTask.addCatch(notifyUnrecoverableTask).next(
               isVersionLive
                 .when(
