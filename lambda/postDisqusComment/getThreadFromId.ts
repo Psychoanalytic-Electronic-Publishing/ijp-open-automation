@@ -17,9 +17,11 @@ export const getThreadFromId = async (id: string): Promise<string> => {
   if (!process.env.DISQUS_FORUM)
     throw new Error("Missing environment variable: DISQUS_FORUM");
 
+  const threadId = id.slice(0, -1) + "A"; // Use the original article ID to preserve comments across versions
+
   const params = {
     api_key: process.env.DISQUS_PUBLIC,
-    thread: `ident:${id}`,
+    thread: `ident:${threadId}`,
     forum: process.env.DISQUS_FORUM,
   };
 
