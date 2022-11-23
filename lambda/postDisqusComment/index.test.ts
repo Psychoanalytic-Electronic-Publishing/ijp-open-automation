@@ -21,7 +21,7 @@ describe("postDisqusComment", () => {
 
   it("Posts a comment", async () => {
     const parsedEmailEvent = {
-      articleId: "ijpopen.001.0001a",
+      manuscriptId: "ijpopen.001.0001a",
       consent: "yes",
       text: "Hello, World!!!",
     };

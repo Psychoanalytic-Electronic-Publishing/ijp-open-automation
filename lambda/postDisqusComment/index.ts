@@ -3,7 +3,7 @@ import { getThreadFromId } from "./getThreadFromId";
 import { postComment } from "./postComment";
 
 interface Event {
-  articleId: string;
+  manuscriptId: string;
   consent: string;
   text: string;
 }
@@ -19,7 +19,7 @@ export async function main(event: Event) {
 
   const signature = generateSignature(AUTOMATED_COMMENT_USER);
 
-  const thread = await getThreadFromId(event.articleId);
+  const thread = await getThreadFromId(event.manuscriptId);
 
   await postComment(event.text, thread, signature);
 }

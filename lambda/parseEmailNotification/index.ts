@@ -7,7 +7,7 @@ interface SESNotification extends SESMessage {
 }
 
 interface Response {
-  articleId: string;
+  manuscriptId: string;
   consent: boolean;
   text: string;
 }
@@ -29,13 +29,13 @@ export async function main(
 
   const splitSubject = subject.split("@");
 
-  const articleId = splitSubject[0].toLowerCase();
+  const manuscriptId = splitSubject[0].toLowerCase();
   const optOutOfIJPO = splitSubject[1].toLowerCase();
 
   const consent = optOutOfIJPO === "yes" ? false : true;
 
   return {
-    articleId,
+    manuscriptId,
     consent,
     text,
   };

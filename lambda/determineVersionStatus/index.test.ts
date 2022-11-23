@@ -25,7 +25,7 @@ import { main } from ".";
 
 describe("determineVersionStatus", () => {
   const event = {
-    articleId: "abc123",
+    manuscriptId: "abc123",
   };
 
   beforeEach(() => {

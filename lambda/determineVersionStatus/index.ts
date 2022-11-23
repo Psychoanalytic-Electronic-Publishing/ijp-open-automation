@@ -8,7 +8,7 @@ const client = createClient({
 });
 
 interface Event {
-  articleId: string;
+  manuscriptId: string;
 }
 
 interface SearchResult {
@@ -28,7 +28,10 @@ export async function main(event: Event) {
     throw new Error("Missing one or more required environment variable");
   }
 
-  const query = client.query().q({ id: event.articleId.toUpperCase() }).rows(0);
+  const query = client
+    .query()
+    .q({ id: event.manuscriptId.toUpperCase() })
+    .rows(0);
 
   const result = (await client.searchAsync(query)) as SearchResult;
 
