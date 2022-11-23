@@ -4,7 +4,7 @@ import { postComment } from "./postComment";
 
 interface Event {
   manuscriptId: string;
-  consent: string;
+  articleId?: string;
   text: string;
 }
 
@@ -17,9 +17,11 @@ const AUTOMATED_COMMENT_USER: DisqusData = {
 export async function main(event: Event) {
   console.log("Event", event);
 
+  if (!event.articleId) throw new Error("Missing expected articleId");
+
   const signature = generateSignature(AUTOMATED_COMMENT_USER);
 
-  const thread = await getThreadFromId(event.manuscriptId);
+  const thread = await getThreadFromId(event.articleId);
 
   await postComment(event.text, thread, signature);
 }

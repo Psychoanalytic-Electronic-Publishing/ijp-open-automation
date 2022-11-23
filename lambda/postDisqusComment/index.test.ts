@@ -21,9 +21,9 @@ describe("postDisqusComment", () => {
 
   it("Posts a comment", async () => {
     const parsedEmailEvent = {
-      manuscriptId: "ijpopen.001.0001a",
-      consent: "yes",
+      manuscriptId: "IJP-22-123",
       text: "Hello, World!!!",
+      articleId: "ijpopen.001.0001a",
     };
 
     process.env.DISQUS_SECRET = "SECRET_KEY";

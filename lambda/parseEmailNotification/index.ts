@@ -29,7 +29,7 @@ export async function main(
 
   const splitSubject = subject.split("@");
 
-  const manuscriptId = splitSubject[0].toLowerCase();
+  const manuscriptId = splitSubject[0];
   const optOutOfIJPO = splitSubject[1].toLowerCase();
 
   const consent = optOutOfIJPO === "yes" ? false : true;

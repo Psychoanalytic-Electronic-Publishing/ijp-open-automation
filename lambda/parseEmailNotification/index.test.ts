@@ -10,7 +10,7 @@ describe("parseEmailNotification", () => {
 
     const response = await main(receivedNotificationStub);
 
-    expect(response?.manuscriptId).toBe("abc123");
+    expect(response?.manuscriptId).toBe("ABC123");
     expect(response?.text).toBe("Example content\n");
   });
 

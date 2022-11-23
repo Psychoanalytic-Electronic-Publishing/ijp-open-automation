@@ -11,9 +11,14 @@ interface Event {
   manuscriptId: string;
 }
 
+interface Document {
+  id: string;
+}
+
 interface SearchResult {
   response: {
     numFound: number;
+    docs?: Document[];
   };
 }
 
@@ -30,12 +35,19 @@ export async function main(event: Event) {
 
   const query = client
     .query()
-    .q({ id: event.manuscriptId.toUpperCase() })
-    .rows(0);
+    .q({ mc_id: event.manuscriptId.toUpperCase() })
+    .rows(1);
 
   const result = (await client.searchAsync(query)) as SearchResult;
 
+  console.log(result);
+
   const isLive = result.response.numFound >= 1;
 
-  return { ...event, isLive };
+  const articleId =
+    isLive && result.response.docs
+      ? result.response.docs[0].id.toLowerCase()
+      : "";
+
+  return { ...event, isLive, articleId };
 }
