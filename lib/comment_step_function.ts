@@ -180,7 +180,9 @@ export class CommentStepFunction extends Construct {
                       interval: cdk.Duration.seconds(5),
                       maxAttempts: 3,
                     })
-                    .addCatch(notifyUnrecoverableTask)
+                    .addCatch(notifyUnrecoverableTask, {
+                      resultPath: "$.error",
+                    })
                     .next(end)
                 )
                 .otherwise(wait1Day.next(determineVersionStatusTask))

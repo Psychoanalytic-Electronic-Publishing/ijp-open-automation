@@ -4,14 +4,19 @@ import { constructEmailParams } from "./constructEmailParams";
 const ses = new AWS.SES();
 
 export interface StepFunctionError {
-  Error: string;
   Cause: string;
+  Error: string;
 }
 
-export async function main(event: StepFunctionError) {
+interface ErrorEvent {
+  manuscriptId: string;
+  error: StepFunctionError;
+}
+
+export async function main(event: ErrorEvent) {
   console.log("Event", event);
 
-  const params = constructEmailParams(event);
+  const params = constructEmailParams(event.error, event.manuscriptId);
 
   await ses.sendEmail(params).promise();
 }

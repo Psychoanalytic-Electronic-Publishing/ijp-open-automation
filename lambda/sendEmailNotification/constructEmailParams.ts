@@ -2,7 +2,8 @@ import * as AWS from "aws-sdk";
 import { StepFunctionError } from ".";
 
 export const constructEmailParams = (
-  errorEvent: StepFunctionError
+  errorEvent: StepFunctionError,
+  manuscriptId: string
 ): AWS.SES.SendEmailRequest => {
   if (!process.env.EMAIL_NOTIFICATION_RECIPIENT) {
     throw new Error(
@@ -28,7 +29,7 @@ export const constructEmailParams = (
         },
       },
       Subject: {
-        Data: `AUTOMATED DISQUS ERROR: ${errorEvent.Error}`,
+        Data: `Error posting comment for ${manuscriptId}`,
         Charset: "UTF-8",
       },
     },

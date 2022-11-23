@@ -2,16 +2,22 @@ import { constructEmailParams } from "./constructEmailParams";
 
 describe("constructEmailParams", () => {
   const errorEvent = {
-    Error: "AxiosError",
-    Cause:
-      '{"errorType":"AxiosError","errorMessage":"Request failed with status code 400","trace":["AxiosError: Request failed with status code 400","    at settle (/var/task/index.js:15673:12)","    at IncomingMessage.handleStreamEnd (/var/task/index.js:16579:11)","    at IncomingMessage.emit (node:events:539:35)","    at endReadableNT (node:internal/streams/readable:1345:12)","    at processTicksAndRejections (node:internal/process/task_queues:83:21)"]}',
+    manuscriptId: "IJP-22-123",
+    error: {
+      Error: "AxiosError",
+      Cause:
+        '{"errorType":"AxiosError","errorMessage":"Request failed with status code 400","trace":["AxiosError: Request failed with status code 400","    at settle (/var/task/index.js:15673:12)","    at IncomingMessage.handleStreamEnd (/var/task/index.js:16579:11)","    at IncomingMessage.emit (node:events:539:35)","    at endReadableNT (node:internal/streams/readable:1345:12)","    at processTicksAndRejections (node:internal/process/task_queues:83:21)"]}',
+    },
   };
 
   it("generates a paramter payload for SES from a caught error event", () => {
     process.env.EMAIL_NOTIFICATION_RECIPIENT = "recipient@test.com";
     process.env.EMAIL_NOTIFICATION_SENDER = "sender@test.com";
 
-    const params = constructEmailParams(errorEvent);
+    const params = constructEmailParams(
+      errorEvent.error,
+      errorEvent.manuscriptId
+    );
 
     expect(params).toStrictEqual({
       Destination: { ToAddresses: [process.env.EMAIL_NOTIFICATION_RECIPIENT] },
@@ -19,12 +25,12 @@ describe("constructEmailParams", () => {
         Body: {
           Text: {
             Charset: "UTF-8",
-            Data: errorEvent.Cause,
+            Data: errorEvent.error.Cause,
           },
         },
         Subject: {
           Charset: "UTF-8",
-          Data: `AUTOMATED DISQUS ERROR: ${errorEvent.Error}`,
+          Data: `Error posting comment for ${errorEvent.manuscriptId}`,
         },
       },
       Source: process.env.EMAIL_NOTIFICATION_SENDER,
@@ -35,7 +41,9 @@ describe("constructEmailParams", () => {
     process.env.EMAIL_NOTIFICATION_SENDER = "sender@test.com";
     process.env.EMAIL_NOTIFICATION_RECIPIENT = "";
 
-    expect(() => constructEmailParams(errorEvent)).toThrowError(
+    expect(() =>
+      constructEmailParams(errorEvent.error, errorEvent.manuscriptId)
+    ).toThrowError(
       "Missing required environment variable: EMAIL_NOTIFICATION_RECIPIENT"
     );
   });
@@ -44,7 +52,9 @@ describe("constructEmailParams", () => {
     process.env.EMAIL_NOTIFICATION_SENDER = "";
     process.env.EMAIL_NOTIFICATION_RECIPIENT = "recipient@test.com";
 
-    expect(() => constructEmailParams(errorEvent)).toThrowError(
+    expect(() =>
+      constructEmailParams(errorEvent.error, errorEvent.manuscriptId)
+    ).toThrowError(
       "Missing required environment variable: EMAIL_NOTIFICATION_SENDER"
     );
   });
