@@ -21,7 +21,7 @@ export const getThreadFromId = async (id: string): Promise<string> => {
 
   const params = {
     api_key: process.env.DISQUS_PUBLIC,
-    thread: `ident:${threadId}`,
+    thread: `ident:${threadId.toLowerCase()}`,
     forum: process.env.DISQUS_FORUM,
   };
 

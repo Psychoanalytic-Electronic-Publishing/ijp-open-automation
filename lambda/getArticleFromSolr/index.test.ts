@@ -23,7 +23,7 @@ jest.mock("solr-client", () => {
 
 import { main } from ".";
 
-describe("determineVersionStatus", () => {
+describe("getArticleFromSolr", () => {
   const event = {
     manuscriptId: "abc123",
   };
@@ -34,7 +34,7 @@ describe("determineVersionStatus", () => {
     process.env.SOLR_DOC_CORE = "pepwebdocs";
   });
 
-  it("returns lowercase article ID if article exists in Solr", async () => {
+  it("returns article ID if article exists in Solr", async () => {
     searchAsyncFn.mockResolvedValueOnce({
       response: {
         numFound: 1,
@@ -46,7 +46,7 @@ describe("determineVersionStatus", () => {
 
     expect(response).toStrictEqual({
       ...event,
-      articleId: "ijpopen.001.0001a",
+      articleId: "IJPOPEN.001.0001A",
     });
   });
 

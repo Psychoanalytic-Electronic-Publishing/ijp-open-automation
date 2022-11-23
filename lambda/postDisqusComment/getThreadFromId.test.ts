@@ -45,7 +45,7 @@ describe("getThreadFromId", () => {
       `https://disqus.com/api/3.0/threads/details.json?api_key=${
         process.env.DISQUS_PUBLIC
       }&thread=${encodeURIComponent(
-        `ident:${ARTICLE_ID.slice(0, -1) + "A"}` // The artice id should be the original article id with the version letter changed to A
+        `ident:${ARTICLE_ID.slice(0, -1) + "a"}` // The artice id should be the original article id in lower case with the version letter changed to a
       )}&forum=${process.env.DISQUS_FORUM}`
     );
 

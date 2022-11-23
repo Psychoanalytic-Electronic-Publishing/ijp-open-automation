@@ -45,7 +45,7 @@ export async function main(event: Event) {
   let articleId = "";
 
   if (result.response.docs && result.response.docs.length >= 1) {
-    articleId = result.response.docs[0].id.toLowerCase();
+    articleId = result.response.docs[0].id;
   }
 
   return { ...event, articleId };
