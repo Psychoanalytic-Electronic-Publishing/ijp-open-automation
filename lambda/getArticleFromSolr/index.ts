@@ -42,12 +42,11 @@ export async function main(event: Event) {
 
   console.log(result);
 
-  const isLive = result.response.numFound >= 1;
+  let articleId = "";
 
-  const articleId =
-    isLive && result.response.docs
-      ? result.response.docs[0].id.toLowerCase()
-      : "";
+  if (result.response.docs && result.response.docs.length >= 1) {
+    articleId = result.response.docs[0].id.toLowerCase();
+  }
 
-  return { ...event, isLive, articleId };
+  return { ...event, articleId };
 }

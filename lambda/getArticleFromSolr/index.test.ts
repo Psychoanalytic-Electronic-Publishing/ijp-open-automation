@@ -34,7 +34,7 @@ describe("determineVersionStatus", () => {
     process.env.SOLR_DOC_CORE = "pepwebdocs";
   });
 
-  it("returns isLive true and the lowercase article ID if article exists in Solr", async () => {
+  it("returns lowercase article ID if article exists in Solr", async () => {
     searchAsyncFn.mockResolvedValueOnce({
       response: {
         numFound: 1,
@@ -46,12 +46,11 @@ describe("determineVersionStatus", () => {
 
     expect(response).toStrictEqual({
       ...event,
-      isLive: true,
       articleId: "ijpopen.001.0001a",
     });
   });
 
-  it("returns isLive false if article does not exist in Solr", async () => {
+  it("returns an empty string for articleId if article does not exist in Solr", async () => {
     searchAsyncFn.mockResolvedValueOnce({
       response: {
         numFound: 0,
@@ -60,7 +59,7 @@ describe("determineVersionStatus", () => {
 
     const response = await main(event);
 
-    expect(response).toStrictEqual({ ...event, isLive: false, articleId: "" });
+    expect(response).toStrictEqual({ ...event, articleId: "" });
   });
 
   it("throws an error when SOLR_HOST variable is not set", async () => {

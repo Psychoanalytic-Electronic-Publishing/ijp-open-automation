@@ -29,9 +29,9 @@ export class CommentStepFunction extends Construct {
     // PARSE SNS EMAIL NOTIFICATION
     const parseEmailNotification = new NodejsFunction(
       this,
-      "determine-ijpo-consent-status",
+      "parse-email-notification",
       {
-        functionName: `${id}-consent-status`,
+        functionName: `${id}-parse-email-notification`,
         timeout: cdk.Duration.seconds(3),
         runtime: lambda.Runtime.NODEJS_16_X,
         handler: "main",
@@ -62,19 +62,16 @@ export class CommentStepFunction extends Construct {
       "Has IJPO consent been provided?"
     );
 
-    // CHECK IJPO ARTICLE VERSION STATUS
-    const determineVersionStatus = new NodejsFunction(
+    // FETCH ARTICLE ID FROM SOLR
+    const getArticleFromSolr = new NodejsFunction(
       this,
-      "determine-ijpo-version-status",
+      "get-article-from-solr",
       {
-        functionName: `${id}-version-status`,
+        functionName: `${id}-fetch-article-id`,
         timeout: cdk.Duration.seconds(10),
         runtime: lambda.Runtime.NODEJS_16_X,
         handler: "main",
-        entry: path.join(
-          __dirname,
-          "/../lambda/determineVersionStatus/index.ts"
-        ),
+        entry: path.join(__dirname, "/../lambda/getArticleFromSolr/index.ts"),
         environment: {
           SOLR_HOST: process.env.SOLR_HOST,
           SOLR_PORT: process.env.SOLR_PORT,
@@ -83,11 +80,11 @@ export class CommentStepFunction extends Construct {
       }
     );
 
-    const determineVersionStatusTask = new tasks.LambdaInvoke(
+    const getArticleFromSolrTask = new tasks.LambdaInvoke(
       this,
-      "Check article version status",
+      "Get article from PEP-Web Solr instance",
       {
-        lambdaFunction: determineVersionStatus,
+        lambdaFunction: getArticleFromSolr,
         outputPath: "$.Payload",
       }
     );
@@ -170,10 +167,13 @@ export class CommentStepFunction extends Construct {
         hasIJPOConsent
           .when(
             sfn.Condition.booleanEquals("$.consent", true),
-            determineVersionStatusTask.addCatch(notifyUnrecoverableTask).next(
+            getArticleFromSolrTask.addCatch(notifyUnrecoverableTask).next(
               isVersionLive
                 .when(
-                  sfn.Condition.booleanEquals("$.isLive", true),
+                  sfn.Condition.stringEquals("$.articleId", ""),
+                  wait1Day.next(getArticleFromSolrTask)
+                )
+                .otherwise(
                   postDisqusCommentTask
                     .addRetry({
                       errors: ["DisqusTimeout"],
@@ -185,7 +185,6 @@ export class CommentStepFunction extends Construct {
                     })
                     .next(end)
                 )
-                .otherwise(wait1Day.next(determineVersionStatusTask))
             )
           )
           .otherwise(end)
