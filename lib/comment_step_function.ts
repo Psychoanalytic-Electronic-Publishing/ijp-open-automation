@@ -160,30 +160,36 @@ export class CommentStepFunction extends Construct {
 
     // WORKFLOW DEFINTION
     const defintion = parseEmailNotificationTask
-      .addCatch(notifyUnrecoverableTask)
+      .addCatch(notifyUnrecoverableTask, {
+        resultPath: "$.error",
+      })
       .next(
         hasIJPOConsent
           .when(
             sfn.Condition.booleanEquals("$.consent", true),
-            getArticleFromSolrTask.addCatch(notifyUnrecoverableTask).next(
-              isVersionLive
-                .when(
-                  sfn.Condition.stringEquals("$.articleId", ""),
-                  wait1Day.next(getArticleFromSolrTask)
-                )
-                .otherwise(
-                  postDisqusCommentTask
-                    .addRetry({
-                      errors: ["DisqusTimeout"],
-                      interval: cdk.Duration.seconds(5),
-                      maxAttempts: 3,
-                    })
-                    .addCatch(notifyUnrecoverableTask, {
-                      resultPath: "$.error",
-                    })
-                    .next(end)
-                )
-            )
+            getArticleFromSolrTask
+              .addCatch(notifyUnrecoverableTask, {
+                resultPath: "$.error",
+              })
+              .next(
+                isVersionLive
+                  .when(
+                    sfn.Condition.stringEquals("$.articleId", ""),
+                    wait1Day.next(getArticleFromSolrTask)
+                  )
+                  .otherwise(
+                    postDisqusCommentTask
+                      .addRetry({
+                        errors: ["DisqusTimeout"],
+                        interval: cdk.Duration.seconds(5),
+                        maxAttempts: 3,
+                      })
+                      .addCatch(notifyUnrecoverableTask, {
+                        resultPath: "$.error",
+                      })
+                      .next(end)
+                  )
+              )
           )
           .otherwise(end)
       );
