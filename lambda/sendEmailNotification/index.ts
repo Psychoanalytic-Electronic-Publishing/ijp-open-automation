@@ -9,7 +9,7 @@ export interface StepFunctionError {
 }
 
 interface ErrorEvent {
-  manuscriptId: string;
+  manuscriptId?: string;
   error: StepFunctionError;
 }
 

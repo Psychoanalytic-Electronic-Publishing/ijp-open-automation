@@ -3,7 +3,7 @@ import { StepFunctionError } from ".";
 
 export const constructEmailParams = (
   errorEvent: StepFunctionError,
-  manuscriptId: string
+  manuscriptId?: string
 ): AWS.SES.SendEmailRequest => {
   if (!process.env.EMAIL_NOTIFICATION_RECIPIENT) {
     throw new Error(
