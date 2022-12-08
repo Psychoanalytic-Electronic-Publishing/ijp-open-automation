@@ -19,9 +19,8 @@ export class CommentStepFunction extends Construct {
       !process.env.DISQUS_SECRET ||
       !process.env.DISQUS_PUBLIC ||
       !process.env.DISQUS_FORUM ||
-      !process.env.SOLR_HOST ||
-      !process.env.SOLR_PORT ||
-      !process.env.SOLR_DOC_CORE
+      !process.env.PEP_API_BASE_URL ||
+      !process.env.PEP_API_KEY
     ) {
       throw new Error("Missing one or more required environment variable");
     }
@@ -73,9 +72,8 @@ export class CommentStepFunction extends Construct {
         handler: "main",
         entry: path.join(__dirname, "/../lambda/getArticleFromSolr/index.ts"),
         environment: {
-          SOLR_HOST: process.env.SOLR_HOST,
-          SOLR_PORT: process.env.SOLR_PORT,
-          SOLR_DOC_CORE: process.env.SOLR_DOC_CORE,
+          PEP_API_BASE_URL: process.env.PEP_API_BASE_URL,
+          PEP_API_KEY: process.env.PEP_API_KEY,
         },
       }
     );

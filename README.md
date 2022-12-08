@@ -151,7 +151,7 @@ Before you start, you'll need to install the AWS CDK and AWS CLI:
 
 ## Environment Variables
 
-There are currently 10 required environment variables:
+There are currently 9 required environment variables:
 
 1. `AWS_ACCESS_KEY` - IAM user with admin permissions for CDK deployments
 2. `AWS_SECRET_KEY` - IAM user with admin permissions for CDK deployments
@@ -160,9 +160,8 @@ There are currently 10 required environment variables:
 5. `DISQUS_SECRET` - Disqus application secret key
 6. `EMAIL_NOTIFICATION_SENDER` - Internal email address to receive IJPO letters and send email notifications
 7. `EMAIL_NOTIFICATION_RECIPIENT` - Email notification recipient
-8. `SOLR_DOC_CORE` - Name of Solr core for document querying
-9. `SOLR_HOST` - Solr instance host
-10. `SOLR_PORT` - Solr instance port
+8. `PEP_API_KEY` - PEP API Key
+9. `PEP_API_BASE_URL` - PEP API base URL
 
 ### Local Configuration
 

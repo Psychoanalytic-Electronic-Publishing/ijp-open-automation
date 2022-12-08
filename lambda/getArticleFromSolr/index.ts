@@ -1,51 +1,50 @@
-import { createClient } from "solr-client";
-
-const client = createClient({
-  host: process.env.SOLR_HOST,
-  port: parseInt(process.env.SOLR_PORT || ""),
-  core: process.env.SOLR_DOC_CORE,
-  secure: false,
-});
+import axios from "axios";
+import { URLSearchParams } from "url";
 
 interface Event {
   manuscriptId: string;
 }
 
 interface Document {
-  id: string;
+  documentID: string;
 }
 
-interface SearchResult {
-  response: {
-    numFound: number;
-    docs?: Document[];
+interface QueryResponse {
+  documentList: {
+    responseSet: Document[];
   };
 }
 
 export async function main(event: Event) {
-  console.log("Event", event);
-
-  if (
-    !process.env.SOLR_HOST ||
-    !process.env.SOLR_PORT ||
-    !process.env.SOLR_DOC_CORE
-  ) {
+  if (!process.env.PEP_API_BASE_URL || !process.env.PEP_API_KEY) {
     throw new Error("Missing one or more required environment variable");
   }
 
-  const query = client
-    .query()
-    .q({ mc_id: event.manuscriptId.toUpperCase() })
-    .rows(1);
+  const headers = {
+    "client-id": "1",
+    "x-api-authorize": process.env.PEP_API_KEY,
+  };
 
-  const result = (await client.searchAsync(query)) as SearchResult;
+  const data = {
+    smarttext: `meta_xml:"${event.manuscriptId}"`,
+  };
 
-  console.log(result);
+  const searchParams = new URLSearchParams(data);
+
+  const url = `${process.env.PEP_API_BASE_URL}/Database/Search?${searchParams}`;
+
+  const response = await axios.get<QueryResponse>(url, { headers });
 
   let articleId = "";
 
-  if (result.response.docs && result.response.docs.length >= 1) {
-    articleId = result.response.docs[0].id;
+  if (response.data.documentList.responseSet.length > 1) {
+    throw new Error(
+      `Multiple articles found for manuscript ID ${event.manuscriptId}`
+    );
+  }
+
+  if (response.data.documentList.responseSet.length >= 1) {
+    articleId = response.data.documentList.responseSet[0].documentID;
   }
 
   return { ...event, articleId };

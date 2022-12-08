@@ -1,27 +1,8 @@
-const searchAsyncFn = jest.fn();
-
-const solrMock = {
-  createClient: jest.fn().mockImplementation(() => {
-    return {
-      searchAsync: searchAsyncFn,
-      query: jest.fn().mockImplementation(() => {
-        return {
-          q: jest.fn().mockImplementation(() => {
-            return {
-              rows: jest.fn(),
-            };
-          }),
-        };
-      }),
-    };
-  }),
-};
-
-jest.mock("solr-client", () => {
-  return solrMock;
-});
-
+import axios from "axios";
 import { main } from ".";
+
+jest.mock("axios");
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe("getArticleFromSolr", () => {
   const event = {
@@ -29,20 +10,32 @@ describe("getArticleFromSolr", () => {
   };
 
   beforeEach(() => {
-    process.env.SOLR_HOST = "54.170.156.204";
-    process.env.SOLR_PORT = "8983";
-    process.env.SOLR_DOC_CORE = "pepwebdocs";
+    process.env.PEP_API_BASE_URL = "https://test.com/v2";
+    process.env.PEP_API_KEY = "1234";
   });
 
-  it("returns article ID if article exists in Solr", async () => {
-    searchAsyncFn.mockResolvedValueOnce({
-      response: {
-        numFound: 1,
-        docs: [{ id: "IJPOPEN.001.0001A" }],
+  it("returns article ID if the article exists", async () => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        documentList: {
+          responseSet: [
+            {
+              documentID: "IJPOPEN.001.0001A",
+            },
+          ],
+        },
       },
     });
 
     const response = await main(event);
+
+    const url = `${process.env.PEP_API_BASE_URL}/Database/Search?smarttext=meta_xml%3A%22${event.manuscriptId}%22`;
+    const headers = {
+      "client-id": "1",
+      "x-api-authorize": process.env.PEP_API_KEY,
+    };
+
+    expect(axios.get).toBeCalledWith(url, { headers });
 
     expect(response).toStrictEqual({
       ...event,
@@ -50,10 +43,33 @@ describe("getArticleFromSolr", () => {
     });
   });
 
+  it("throws an error if the API returns multiple documents", async () => {
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        documentList: {
+          responseSet: [
+            {
+              documentID: "IJPOPEN.001.0001A",
+            },
+            {
+              documentID: "IJPOPEN.001.0001B",
+            },
+          ],
+        },
+      },
+    });
+
+    await expect(main(event)).rejects.toThrow(
+      `Multiple articles found for manuscript ID ${event.manuscriptId}`
+    );
+  });
+
   it("returns an empty string for articleId if article does not exist in Solr", async () => {
-    searchAsyncFn.mockResolvedValueOnce({
-      response: {
-        numFound: 0,
+    mockedAxios.get.mockResolvedValueOnce({
+      data: {
+        documentList: {
+          responseSet: [],
+        },
       },
     });
 
@@ -62,24 +78,16 @@ describe("getArticleFromSolr", () => {
     expect(response).toStrictEqual({ ...event, articleId: "" });
   });
 
-  it("throws an error when SOLR_HOST variable is not set", async () => {
-    process.env.SOLR_HOST = "";
+  it("throws an error when PEP_API_BASE_URL variable is not set", async () => {
+    process.env.PEP_API_BASE_URL = "";
 
     await expect(main(event)).rejects.toThrow(
       "Missing one or more required environment variable"
     );
   });
 
-  it("throws an error when SOLR_PORT variable is not set", async () => {
-    process.env.SOLR_PORT = "";
-
-    await expect(main(event)).rejects.toThrow(
-      "Missing one or more required environment variable"
-    );
-  });
-
-  it("throws an error when SOLR_DOC_CORE variable is not set", async () => {
-    process.env.SOLR_DOC_CORE = "";
+  it("throws an error when PEP_API_KEY variable is not set", async () => {
+    process.env.PEP_API_KEY = "";
 
     await expect(main(event)).rejects.toThrow(
       "Missing one or more required environment variable"
