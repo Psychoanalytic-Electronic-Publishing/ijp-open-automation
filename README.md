@@ -203,7 +203,7 @@ In order to receive inbound emails and send outbound notifications, you'll need 
 
 First configure your internal email address for sending notifications and receiving letters:
 
-1. Visit the verified identities page of SES within the AWS console (https://eu-west-1.console.aws.amazon.com/ses/home?region=eu-west-1#/verified-identities)
+1. Visit the verified identities page of SES within the AWS console (https://us-east-1.console.aws.amazon.com/ses/home?region=us-east-1#/verified-identities)
 2. Click "Create Identity"
 3. Select "Domain" and enter the domain of your `EMAIL_NOTIFICATION_SENDER`
 4. Click "Create Identity" again

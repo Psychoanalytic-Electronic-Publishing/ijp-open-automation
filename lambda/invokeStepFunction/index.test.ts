@@ -14,7 +14,7 @@ describe("invokeStepFunction", () => {
         EventSource: "aws:sns",
         EventVersion: "1.0",
         EventSubscriptionArn:
-          "arn:aws:sns:eu-west-1:286790923970:DisqusCommentServiceStack-DisqusCommentServiceStackEmailTopic99687142-BWeyvXWJLmJT:3ca5dc5d-ba88-4c7c-ad5f-cb772a661fa0",
+          "arn:aws:sns:us-east-1:286790923970:DisqusCommentServiceStack-DisqusCommentServiceStackEmailTopic99687142-BWeyvXWJLmJT:3ca5dc5d-ba88-4c7c-ad5f-cb772a661fa0",
         Sns: {
           Message: JSON.stringify({
             notificationType: "Received",
@@ -27,7 +27,7 @@ describe("invokeStepFunction", () => {
         EventSource: "aws:sns",
         EventVersion: "1.0",
         EventSubscriptionArn:
-          "arn:aws:sns:eu-west-1:286790923970:DisqusCommentServiceStack-DisqusCommentServiceStackEmailTopic99687142-BWeyvXWJLmJT:3ca5dc5d-ba88-4c7c-ad5f-cb772a661fa0",
+          "arn:aws:sns:us-east-1:286790923970:DisqusCommentServiceStack-DisqusCommentServiceStackEmailTopic99687142-BWeyvXWJLmJT:3ca5dc5d-ba88-4c7c-ad5f-cb772a661fa0",
         Sns: {
           Message: JSON.stringify({
             notificationType: "Received",
