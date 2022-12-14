@@ -210,7 +210,12 @@ First configure your internal email address for sending notifications and receiv
 5. If your domain is not configured in Route53, follow the on-screen instructions to validate your domain using CNAME DNS records.
 6. Wait until the identity status displays as "Verified"
 
-Next, configure the external `EMAIL_NOTIFICATION_RECIPIENT` address that you wish to recieve error notifications to:
+To enable email receiving on your `INGESTION_EMAIL_ADDRESS`, create an `MX` with the value `10 inbound-smtp.region.amazonaws.com` where `region` is AWS region you have configured your SES identity on.
+
+See the "Publising an MX record for AWS SES email receiving" on AWS for more information:
+https://docs.aws.amazon.com/ses/latest/dg/receiving-email-mx-record.html
+
+If your AWS SES is still in sandbox mode, you'll need to verify the external `EMAIL_NOTIFICATION_RECIPIENT` address that you wish to recieve error notifications on:
 
 1. Visit the verified identities page again
 2. Click "Create Identity"
