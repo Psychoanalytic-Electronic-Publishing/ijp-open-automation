@@ -201,7 +201,7 @@ If you are deploying the project to an AWS account for the first time, you'll ne
 
 In order to receive inbound emails and send outbound notifications, you'll need to manually configure your domain and recipient email in SES.
 
-First configure your internal email address for sending notifications and receiving letters:
+### Sending emails
 
 1. Visit the verified identities page of SES within the AWS console (https://us-east-1.console.aws.amazon.com/ses/home?region=us-east-1#/verified-identities)
 2. Click "Create Identity"
@@ -210,11 +210,6 @@ First configure your internal email address for sending notifications and receiv
 5. If your domain is not configured in Route53, follow the on-screen instructions to validate your domain using CNAME DNS records.
 6. Wait until the identity status displays as "Verified"
 
-To enable email receiving on your `INGESTION_EMAIL_ADDRESS`, create an `MX` with the value `10 inbound-smtp.region.amazonaws.com` where `region` is AWS region you have configured your SES identity on.
-
-See the "Publising an MX record for AWS SES email receiving" on AWS for more information:
-https://docs.aws.amazon.com/ses/latest/dg/receiving-email-mx-record.html
-
 If your AWS SES is still in sandbox mode, you'll need to verify the external `EMAIL_NOTIFICATION_RECIPIENT` address that you wish to recieve error notifications on:
 
 1. Visit the verified identities page again
@@ -222,6 +217,19 @@ If your AWS SES is still in sandbox mode, you'll need to verify the external `EM
 3. Select "Email address" and enter your `EMAIL_NOTIFICATION_RECIPIENT` address
 4. Click "Create Identity" again
 5. Click the link in the confirmation email in the `EMAIL_NOTIFICATION_RECIPIENT` inbox
+
+### Receiving emails
+
+To enable email receiving on your `INGESTION_EMAIL_ADDRESS`, create an `MX` record with the value `10 inbound-smtp.region.amazonaws.com` where `region` is AWS region you have configured your SES identity on.
+
+See the "Publising an MX record for AWS SES email receiving" on AWS for more information:
+https://docs.aws.amazon.com/ses/latest/dg/receiving-email-mx-record.html
+
+Lastly, you'll need to activate the email receiving rule set created by the CDK stack:
+
+1. Navigate to the email receiving section of SES within the AWS console (https://us-east-1.console.aws.amazon.com/ses/home?region=us-east-1#/email-receiving)
+2. Select the rulset with the prefix `DisqusCommentServiceStackEmailRuleSet`
+3. Press "Set as active" and confirm the prompt
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
