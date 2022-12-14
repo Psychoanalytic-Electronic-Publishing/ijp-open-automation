@@ -11,9 +11,9 @@ export const constructEmailParams = (
     );
   }
 
-  if (!process.env.EMAIL_NOTIFICATION_SENDER) {
+  if (!process.env.INGESTION_EMAIL_ADDRESS) {
     throw new Error(
-      "Missing required environment variable: EMAIL_NOTIFICATION_SENDER"
+      "Missing required environment variable: INGESTION_EMAIL_ADDRESS"
     );
   }
 
@@ -33,6 +33,6 @@ export const constructEmailParams = (
         Charset: "UTF-8",
       },
     },
-    Source: process.env.EMAIL_NOTIFICATION_SENDER,
+    Source: process.env.INGESTION_EMAIL_ADDRESS,
   };
 };

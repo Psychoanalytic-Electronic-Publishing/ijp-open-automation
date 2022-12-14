@@ -69,7 +69,7 @@ This project has been built to automate the publishing of letters from Manuscrip
 
 The infrastructure is deployed via CDK and defined within the `lib/stack.ts` entrypoint.
 
-Letters within Manuscript can be exported via email directly to this service's `EMAIL_NOTIFICATION_SENDER` email address.
+Letters within Manuscript can be exported via email directly to this service's `INGESTION_EMAIL_ADDRESS` email address.
 
 Once an email is received, an SNS notification will be triggered and fed into a new execution of the commenting state machine via an intermediary Lambda function.
 
@@ -158,7 +158,7 @@ There are currently 9 required environment variables:
 3. `DISQUS_FORUM` - Disqus shortname
 4. `DISQUS_PUBLIC` - Disqus application public key
 5. `DISQUS_SECRET` - Disqus application secret key
-6. `EMAIL_NOTIFICATION_SENDER` - Internal email address to receive IJPO letters and send email notifications
+6. `INGESTION_EMAIL_ADDRESS` - Internal email address to receive IJPO letters and send email notifications
 7. `EMAIL_NOTIFICATION_RECIPIENT` - Email notification recipient
 8. `PEP_API_KEY` - PEP API Key
 9. `PEP_API_BASE_URL` - PEP API base URL
@@ -205,7 +205,7 @@ First configure your internal email address for sending notifications and receiv
 
 1. Visit the verified identities page of SES within the AWS console (https://us-east-1.console.aws.amazon.com/ses/home?region=us-east-1#/verified-identities)
 2. Click "Create Identity"
-3. Select "Domain" and enter the domain of your `EMAIL_NOTIFICATION_SENDER`
+3. Select "Domain" and enter the domain of your `INGESTION_EMAIL_ADDRESS`
 4. Click "Create Identity" again
 5. If your domain is not configured in Route53, follow the on-screen instructions to validate your domain using CNAME DNS records.
 6. Wait until the identity status displays as "Verified"
