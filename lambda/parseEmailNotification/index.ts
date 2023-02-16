@@ -12,10 +12,22 @@ interface Response {
   text: string;
 }
 
+const isSenderAllowed = (email: string) => {
+  if (!process.env.EMAIL_WHITELIST) return false;
+
+  const whitelist = process.env.EMAIL_WHITELIST.split(",");
+
+  const domain = email.split("@")[1];
+
+  return whitelist.includes(domain) || whitelist.includes(email);
+};
+
 export async function main(
   event: SESNotification
 ): Promise<Response | undefined> {
   console.log("Event", event);
+
+  if (!isSenderAllowed(event.mail.source)) return;
 
   if (event.notificationType !== "Received") return;
 
