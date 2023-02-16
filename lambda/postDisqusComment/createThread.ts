@@ -1,16 +1,16 @@
 import axios from "axios";
 import { URLSearchParams } from "url";
 
-interface ThreadDetailsResponse {
+interface CreateThreadResponse {
   response: {
     id: string;
   };
 }
 
-const COMMENT_ENDPOINT =
-  "https://disqus.com/api/3.0/threads/details.json" as const;
+const CREATE_THREAD_ENDPOINT =
+  "https://disqus.com/api/3.0/threads/create.json" as const;
 
-export const getThreadFromId = async (id: string): Promise<string> => {
+export const createThread = async (threadId: string, signature: string) => {
   if (!process.env.DISQUS_PUBLIC)
     throw new Error("Missing environment variable: DISQUS_PUBLIC");
 
@@ -18,15 +18,17 @@ export const getThreadFromId = async (id: string): Promise<string> => {
     throw new Error("Missing environment variable: DISQUS_FORUM");
 
   const params = {
-    api_key: process.env.DISQUS_PUBLIC,
-    thread: `ident:${id}`,
     forum: process.env.DISQUS_FORUM,
+    api_key: process.env.DISQUS_PUBLIC,
+    title: threadId,
+    identifier: threadId,
+    remote_auth: signature,
   };
 
   const searchParams = new URLSearchParams(params);
 
-  const resp = await axios.get<ThreadDetailsResponse>(
-    `${COMMENT_ENDPOINT}?${searchParams}`
+  const resp = await axios.post<CreateThreadResponse>(
+    `${CREATE_THREAD_ENDPOINT}?${searchParams}`
   );
 
   return resp.data.response.id;
