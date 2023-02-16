@@ -27,7 +27,9 @@ export const createThread = async (threadId: string, signature: string) => {
 
   const searchParams = new URLSearchParams(params);
 
-  return await axios.post<CreateThreadResponse>(
+  const resp = await axios.post<CreateThreadResponse>(
     `${CREATE_THREAD_ENDPOINT}?${searchParams}`
   );
+
+  return resp.data.response.id;
 };

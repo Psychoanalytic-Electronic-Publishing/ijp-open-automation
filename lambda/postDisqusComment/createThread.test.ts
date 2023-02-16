@@ -19,14 +19,21 @@ describe("createThread", () => {
     jest.resetAllMocks();
   });
 
-  it("makes a valid request to the Disqus thread API", async () => {
-    mockedAxios.post.mockResolvedValue({ status: 200 });
+  it("creates a thread via the Disqus API and returns an ID", async () => {
+    const NEW_THREAD_ID = "new-thread-id";
 
-    await createThread(data.threadId, data.signature);
+    mockedAxios.post.mockResolvedValue({
+      status: 200,
+      data: { response: { id: NEW_THREAD_ID } },
+    });
+
+    const thread = await createThread(data.threadId, data.signature);
 
     expect(mockedAxios.post).toHaveBeenCalledWith(
       `https://disqus.com/api/3.0/threads/create.json?forum=${process.env.DISQUS_FORUM}&api_key=${process.env.DISQUS_PUBLIC}&title=${data.threadId}&identifier=${data.threadId}&remote_auth=${data.signature}`
     );
+
+    expect(thread).toBe(NEW_THREAD_ID);
   });
 
   it("throws an error when DISQUS_PUBLIC variable is not set", async () => {
