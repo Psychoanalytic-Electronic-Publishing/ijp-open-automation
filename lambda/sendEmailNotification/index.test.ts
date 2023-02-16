@@ -15,7 +15,7 @@ describe("sendEmailNotification", () => {
 
   it("sends an email notification via SES", async () => {
     process.env.EMAIL_NOTIFICATION_RECIPIENT = "recipient@test.com";
-    process.env.INGESTION_EMAIL_ADDRESS = "sender@test.com";
+    process.env.COMMENT_EMAIL_ADDRESS = "sender@test.com";
 
     await main(errorEvent);
 
@@ -33,7 +33,7 @@ describe("sendEmailNotification", () => {
           Data: `Error posting comment for ${errorEvent.manuscriptId}`,
         },
       },
-      Source: process.env.INGESTION_EMAIL_ADDRESS,
+      Source: process.env.COMMENT_EMAIL_ADDRESS,
     });
   });
 });
