@@ -15,7 +15,7 @@ export class CommentStepFunction extends Construct {
 
     if (
       !process.env.EMAIL_NOTIFICATION_RECIPIENT ||
-      !process.env.INGESTION_EMAIL_ADDRESS ||
+      !process.env.COMMENT_EMAIL_ADDRESS ||
       !process.env.DISQUS_SECRET ||
       !process.env.DISQUS_PUBLIC ||
       !process.env.DISQUS_FORUM ||
@@ -136,7 +136,7 @@ export class CommentStepFunction extends Construct {
         environment: {
           EMAIL_NOTIFICATION_RECIPIENT:
             process.env.EMAIL_NOTIFICATION_RECIPIENT,
-          INGESTION_EMAIL_ADDRESS: process.env.INGESTION_EMAIL_ADDRESS,
+          COMMENT_EMAIL_ADDRESS: process.env.COMMENT_EMAIL_ADDRESS,
         },
       }
     );

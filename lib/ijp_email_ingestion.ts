@@ -9,9 +9,9 @@ export class EmailIngestion extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    if (!process.env.INGESTION_EMAIL_ADDRESS) {
+    if (!process.env.COMMENT_EMAIL_ADDRESS) {
       throw new Error(
-        "Missing required environment variable: INGESTION_EMAIL_ADDRESS"
+        "Missing required environment variable: COMMENT_EMAIL_ADDRESS"
       );
     }
 
@@ -19,7 +19,7 @@ export class EmailIngestion extends Construct {
 
     // Create a rule for the recipient email address
     const awsRule = ruleSet.addRule("Rule", {
-      recipients: [process.env.INGESTION_EMAIL_ADDRESS],
+      recipients: [process.env.COMMENT_EMAIL_ADDRESS],
     });
 
     // Saves the received email to the S3 bucket

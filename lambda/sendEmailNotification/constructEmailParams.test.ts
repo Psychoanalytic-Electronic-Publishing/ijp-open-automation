@@ -12,7 +12,7 @@ describe("constructEmailParams", () => {
 
   it("generates a paramter payload for SES from a caught error event", () => {
     process.env.EMAIL_NOTIFICATION_RECIPIENT = "recipient@test.com";
-    process.env.INGESTION_EMAIL_ADDRESS = "sender@test.com";
+    process.env.COMMENT_EMAIL_ADDRESS = "sender@test.com";
 
     const params = constructEmailParams(
       errorEvent.error,
@@ -33,12 +33,12 @@ describe("constructEmailParams", () => {
           Data: `Error posting comment for ${errorEvent.manuscriptId}`,
         },
       },
-      Source: process.env.INGESTION_EMAIL_ADDRESS,
+      Source: process.env.COMMENT_EMAIL_ADDRESS,
     });
   });
 
   it("throws an error if the EMAIL_NOTIFICATION_RECIPIENT variable is missing", () => {
-    process.env.INGESTION_EMAIL_ADDRESS = "sender@test.com";
+    process.env.COMMENT_EMAIL_ADDRESS = "sender@test.com";
     process.env.EMAIL_NOTIFICATION_RECIPIENT = "";
 
     expect(() =>
@@ -48,14 +48,14 @@ describe("constructEmailParams", () => {
     );
   });
 
-  it("throws an error if the INGESTION_EMAIL_ADDRESS variable is missing", () => {
-    process.env.INGESTION_EMAIL_ADDRESS = "";
+  it("throws an error if the COMMENT_EMAIL_ADDRESS variable is missing", () => {
+    process.env.COMMENT_EMAIL_ADDRESS = "";
     process.env.EMAIL_NOTIFICATION_RECIPIENT = "recipient@test.com";
 
     expect(() =>
       constructEmailParams(errorEvent.error, errorEvent.manuscriptId)
     ).toThrowError(
-      "Missing required environment variable: INGESTION_EMAIL_ADDRESS"
+      "Missing required environment variable: COMMENT_EMAIL_ADDRESS"
     );
   });
 });
