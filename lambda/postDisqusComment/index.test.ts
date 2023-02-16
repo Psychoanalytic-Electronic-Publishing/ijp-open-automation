@@ -16,7 +16,7 @@ jest.mock("./createThread.ts", () => ({
 const parsedEmailEvent = {
   manuscriptId: "IJP-22-123",
   text: "Hello, World!!!",
-  articleId: "ijpopen.001.0001a",
+  articleId: "IJPOPEN.001.0001C",
 };
 
 describe("postDisqusComment", () => {

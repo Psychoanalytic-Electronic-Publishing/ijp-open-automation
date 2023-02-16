@@ -23,19 +23,20 @@ const threadNotFound = (e: unknown) =>
 export async function main(event: Event) {
   if (!event.articleId) throw new Error("Missing expected articleId");
 
+  const threadId = (event.articleId.slice(0, -1) + "A").toLowerCase(); // Use the original article ID to preserve comments across versions
+
   const signature = generateSignature(AUTOMATED_COMMENT_USER);
 
   let thread = "";
 
   try {
-    thread = await getThreadFromId(event.articleId);
+    thread = await getThreadFromId(threadId);
   } catch (e) {
-    console.log("Thread not found", e);
     if (!threadNotFound(e)) {
       throw e;
     }
 
-    thread = await createThread(event.articleId, signature);
+    thread = await createThread(threadId, signature);
   }
 
   await postComment(event.text, thread, signature);
