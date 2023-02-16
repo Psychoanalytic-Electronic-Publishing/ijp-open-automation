@@ -162,6 +162,7 @@ There are currently 9 required environment variables:
 7. `EMAIL_NOTIFICATION_RECIPIENT` - Email notification recipient
 8. `PEP_API_KEY` - PEP API Key
 9. `PEP_API_BASE_URL` - PEP API base URL
+10. `EMAIL_WHITELIST` - comma-delimited string of email addresses or domains to allow actions from
 
 ### Local Configuration
 

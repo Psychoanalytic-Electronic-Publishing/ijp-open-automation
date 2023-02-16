@@ -20,6 +20,7 @@ jobs:
       EMAIL_NOTIFICATION_RECIPIENT: ${{ secrets.EMAIL_NOTIFICATION_RECIPIENT }}
       PEP_API_BASE_URL: ${{ secrets.PEP_API_BASE_URL }}
       PEP_API_KEY: ${{ secrets.PEP_API_KEY }}
+      EMAIL_WHITELIST: ${{ vars.EMAIL_WHITELIST }}
 
     steps:
       - uses: actions/checkout@v3

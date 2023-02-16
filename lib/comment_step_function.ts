@@ -20,7 +20,8 @@ export class CommentStepFunction extends Construct {
       !process.env.DISQUS_PUBLIC ||
       !process.env.DISQUS_FORUM ||
       !process.env.PEP_API_BASE_URL ||
-      !process.env.PEP_API_KEY
+      !process.env.PEP_API_KEY ||
+      !process.env.EMAIL_WHITELIST
     ) {
       throw new Error("Missing one or more required environment variable");
     }
@@ -38,6 +39,9 @@ export class CommentStepFunction extends Construct {
           __dirname,
           "/../lambda/parseEmailNotification/index.ts"
         ),
+        environment: {
+          EMAIL_WHITELIST: process.env.EMAIL_WHITELIST,
+        },
       }
     );
 
