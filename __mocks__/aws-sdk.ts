@@ -17,3 +17,11 @@ const sendEmailFn = jest
 export class SES {
   sendEmail = sendEmailFn;
 }
+
+const deleteObjectsFn = jest
+  .fn()
+  .mockImplementation(() => ({ promise: awsSdkPromiseResponse }));
+
+export class S3 {
+  deleteObjects = deleteObjectsFn;
+}

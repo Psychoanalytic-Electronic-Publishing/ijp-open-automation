@@ -7,6 +7,7 @@ import { CommentStepFunction } from "./comment_step_function";
 import { EmailIngestion } from "./ijp_email_ingestion";
 import { InvokeStepFunction } from "./invoke_step_function";
 import * as subs from "aws-cdk-lib/aws-sns-subscriptions";
+import { IJPOWithdrawals } from "./ijpo_withdrawals";
 
 export class DisqusCommentServiceStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -19,6 +20,8 @@ export class DisqusCommentServiceStack extends cdk.Stack {
     const invoke = new InvokeStepFunction(this, id + "-Invoke", {
       stateMachineArn: commentStepFunction.StateMachine.stateMachineArn,
     });
+
+    new IJPOWithdrawals(this, id + "-Withdrawals");
 
     // Trigger step function invocation lambda from inbound email notification
     emailIngestion.Topic.addSubscription(
