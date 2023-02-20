@@ -3,6 +3,7 @@ import * as AWS from "aws-sdk";
 const s3 = new AWS.S3();
 
 export const listAllS3 = (
+  articleId: string,
   bucket: string,
   prefix: string
 ): Promise<string[]> => {
@@ -21,12 +22,12 @@ export const listAllS3 = (
           return reject(err);
         }
 
-        if (!data.Contents) {
+        if (!data.Contents || data.Contents.length === 0) {
           return reject(new Error("No matching articles found"));
         }
 
         data.Contents.forEach((content) => {
-          if (content.Key) {
+          if (content.Key && content.Key.includes(articleId)) {
             keys.push(content.Key);
           }
         });
@@ -43,3 +44,34 @@ export const listAllS3 = (
     listKeys();
   });
 };
+
+interface Event {
+  articleId: string;
+}
+
+export async function main(event: Event) {
+  if (
+    !process.env.BUCKET_NAME ||
+    !process.env.S3_XML_PREFIX ||
+    !process.env.S3_PDF_PREFIX
+  ) {
+    throw new Error("Missing one or more required environment variable");
+  }
+
+  const xmlKeys = await listAllS3(
+    event.articleId,
+    process.env.BUCKET_NAME,
+    process.env.S3_XML_PREFIX
+  );
+
+  const pdfKeys = await listAllS3(
+    event.articleId,
+    process.env.BUCKET_NAME,
+    process.env.S3_PDF_PREFIX
+  );
+
+  return {
+    xmlKeys,
+    pdfKeys,
+  };
+}

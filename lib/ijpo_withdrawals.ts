@@ -8,7 +8,11 @@ export class IJPOWithdrawals extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    if (!process.env.BUCKET_NAME || !process.env.S3_PREFIX) {
+    if (
+      !process.env.BUCKET_NAME ||
+      !process.env.S3_PDF_PREFIX ||
+      !process.env.S3_XML_PREFIX
+    ) {
       throw new Error("Missing one or more required environment variable");
     }
 
@@ -35,16 +39,17 @@ export class IJPOWithdrawals extends Construct {
     // Attach the policy to the Lambda
     removeArticlesFromS3.addToRolePolicy(allowS3Delete);
 
-    const fetchArticleKeys = new NodejsFunction(this, "fetch-article-keys", {
-      functionName: `${id}-fetch-article-keys`,
+    const fetchFileKeys = new NodejsFunction(this, "fetch-file-keys", {
+      functionName: `${id}-fetch-file-keys`,
       timeout: cdk.Duration.seconds(30),
       memorySize: 256,
       runtime: lambda.Runtime.NODEJS_16_X,
       handler: "main",
-      entry: path.join(__dirname, `/../lambda/fetchArticleKeys/index.ts`),
+      entry: path.join(__dirname, `/../lambda/fetchFileKeys/index.ts`),
       environment: {
         BUCKET_NAME: process.env.BUCKET_NAME,
-        S3_PREFIX: process.env.S3_PREFIX,
+        S3_PDF_PREFIX: process.env.S3_PDF_PREFIX,
+        S3_XML_PREFIX: process.env.S3_XML_PREFIX,
       },
     });
 
@@ -57,6 +62,6 @@ export class IJPOWithdrawals extends Construct {
     });
 
     // Attach the policy to the Lambda
-    fetchArticleKeys.addToRolePolicy(allowS3List);
+    fetchFileKeys.addToRolePolicy(allowS3List);
   }
 }
