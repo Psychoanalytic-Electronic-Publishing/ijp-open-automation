@@ -73,7 +73,10 @@ export async function main(event: Event) {
   const keys = [...xmlKeys, ...pdfKeys];
 
   const filteredKeys = keys.filter((key) => {
-    return key.includes(".xml") || key.includes(".pdf");
+    return (
+      !key.includes("bRemoved") &&
+      (key.includes(".xml") || key.includes(".pdf"))
+    );
   });
 
   return {

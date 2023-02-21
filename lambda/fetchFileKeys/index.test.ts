@@ -15,6 +15,9 @@ const xmlResults = [
     Key: "xml/1234A.xml",
   },
   {
+    Key: "xml/1234A(bRemoved).xml",
+  },
+  {
     Key: "xml/nope.xml",
   },
 ];
