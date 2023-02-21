@@ -87,8 +87,14 @@ describe("removeArticlesFromS3", () => {
     const result = await main(eventStub);
 
     expect(result).toEqual({
-      pdfKeys: ["pdf/1234C.pdf", "pdf/1234B.pdf", "pdf/1234A.pdf"],
-      xmlKeys: ["xml/1234C.xml", "xml/1234B.xml", "xml/1234A.xml"],
+      keys: [
+        "xml/1234C.xml",
+        "xml/1234B.xml",
+        "xml/1234A.xml",
+        "pdf/1234C.pdf",
+        "pdf/1234B.pdf",
+        "pdf/1234A.pdf",
+      ],
     });
   });
 
@@ -137,8 +143,14 @@ describe("removeArticlesFromS3", () => {
     const result = await main(eventStub);
 
     expect(result).toEqual({
-      pdfKeys: ["pdf/1234C.pdf", "pdf/1234B.pdf", "pdf/1234A.pdf"],
-      xmlKeys: ["xml/1234C.xml", "xml/1234B.xml", "xml/1234A.xml"],
+      keys: [
+        "xml/1234C.xml",
+        "xml/1234B.xml",
+        "xml/1234A.xml",
+        "pdf/1234C.pdf",
+        "pdf/1234B.pdf",
+        "pdf/1234A.pdf",
+      ],
     });
   });
 });

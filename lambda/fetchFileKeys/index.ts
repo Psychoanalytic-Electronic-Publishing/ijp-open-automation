@@ -70,8 +70,9 @@ export async function main(event: Event) {
     process.env.S3_PDF_PREFIX
   );
 
+  const keys = [...xmlKeys, ...pdfKeys];
+
   return {
-    xmlKeys,
-    pdfKeys,
+    keys,
   };
 }
