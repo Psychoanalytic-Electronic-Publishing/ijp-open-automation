@@ -29,6 +29,9 @@ const pdfResults = [
   {
     Key: "pdf/1234A.pdf",
   },
+  {
+    Key: "pdf/1234A.tif",
+  },
 ];
 
 describe("removeArticlesFromS3", () => {
