@@ -16,29 +16,6 @@ export class IJPOWithdrawals extends Construct {
       throw new Error("Missing one or more required environment variable");
     }
 
-    const removeArticlesFromS3 = new NodejsFunction(
-      this,
-      "remove-articles-from-s3",
-      {
-        functionName: `${id}-remove-articles-from-s3`,
-        timeout: cdk.Duration.seconds(5),
-        runtime: lambda.Runtime.NODEJS_16_X,
-        handler: "main",
-        entry: path.join(__dirname, `/../lambda/removeArticlesFromS3/index.ts`),
-        environment: {
-          BUCKET_NAME: process.env.BUCKET_NAME,
-        },
-      }
-    );
-
-    const allowS3Delete = new iam.PolicyStatement({
-      actions: ["s3:deleteObject"],
-      resources: [`arn:aws:s3:::${process.env.BUCKET_NAME}/*`],
-    });
-
-    // Attach the policy to the Lambda
-    removeArticlesFromS3.addToRolePolicy(allowS3Delete);
-
     const fetchFileKeys = new NodejsFunction(this, "fetch-file-keys", {
       functionName: `${id}-fetch-file-keys`,
       timeout: cdk.Duration.seconds(30),
@@ -63,5 +40,33 @@ export class IJPOWithdrawals extends Construct {
 
     // Attach the policy to the Lambda
     fetchFileKeys.addToRolePolicy(allowS3List);
+
+    const markFilesAsRemoved = new NodejsFunction(
+      this,
+      "mark-files-as-removed",
+      {
+        functionName: `${id}-mark-files-as-removed`,
+        timeout: cdk.Duration.seconds(5),
+        runtime: lambda.Runtime.NODEJS_16_X,
+        handler: "main",
+        entry: path.join(__dirname, `/../lambda/markFilesAsRemoved/index.ts`),
+        environment: {
+          BUCKET_NAME: process.env.BUCKET_NAME,
+        },
+      }
+    );
+
+    const markFilesAsRemovedS3Policy = new iam.PolicyStatement({
+      actions: [
+        "s3:deleteObject",
+        "s3:putObject",
+        "s3:putObjectAcl",
+        "s3:getObject",
+      ],
+      resources: [`arn:aws:s3:::${process.env.BUCKET_NAME}/*`],
+    });
+
+    // Attach the policy to the Lambda
+    markFilesAsRemoved.addToRolePolicy(markFilesAsRemovedS3Policy);
   }
 }

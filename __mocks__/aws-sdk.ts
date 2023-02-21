@@ -26,7 +26,12 @@ const listObjectsFn = jest
   .fn()
   .mockImplementation(() => ({ promise: awsSdkPromiseResponse }));
 
+const copyObjectfn = jest
+  .fn()
+  .mockImplementation(() => ({ promise: awsSdkPromiseResponse }));
+
 export class S3 {
   deleteObjects = deleteObjectsFn;
   listObjectsV2 = listObjectsFn;
+  copyObject = copyObjectfn;
 }
