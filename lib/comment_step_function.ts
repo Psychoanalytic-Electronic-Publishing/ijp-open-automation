@@ -37,7 +37,7 @@ export class CommentStepFunction extends Construct {
         handler: "main",
         entry: path.join(
           __dirname,
-          "/../lambda/parseEmailNotification/index.ts"
+          "/../lambda/comment/parseEmailNotification/index.ts"
         ),
         environment: {
           EMAIL_WHITELIST: process.env.EMAIL_WHITELIST,
@@ -74,7 +74,10 @@ export class CommentStepFunction extends Construct {
         timeout: cdk.Duration.seconds(10),
         runtime: lambda.Runtime.NODEJS_16_X,
         handler: "main",
-        entry: path.join(__dirname, "/../lambda/getArticleFromSolr/index.ts"),
+        entry: path.join(
+          __dirname,
+          "/../lambda/comment/getArticleFromSolr/index.ts"
+        ),
         environment: {
           PEP_API_BASE_URL: process.env.PEP_API_BASE_URL,
           PEP_API_KEY: process.env.PEP_API_KEY,
@@ -103,7 +106,10 @@ export class CommentStepFunction extends Construct {
       timeout: cdk.Duration.seconds(3),
       runtime: lambda.Runtime.NODEJS_16_X,
       handler: "main",
-      entry: path.join(__dirname, "/../lambda/postDisqusComment/index.ts"),
+      entry: path.join(
+        __dirname,
+        "/../lambda/comment/postDisqusComment/index.ts"
+      ),
       environment: {
         DISQUS_SECRET: process.env.DISQUS_SECRET,
         DISQUS_PUBLIC: process.env.DISQUS_PUBLIC,
@@ -131,7 +137,7 @@ export class CommentStepFunction extends Construct {
         handler: "main",
         entry: path.join(
           __dirname,
-          "/../lambda/sendEmailNotification/index.ts"
+          "/../lambda/comment/sendEmailNotification/index.ts"
         ),
         environment: {
           EMAIL_NOTIFICATION_RECIPIENT:

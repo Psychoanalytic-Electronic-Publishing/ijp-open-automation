@@ -26,7 +26,10 @@ export class InvokeStepFunction extends Construct {
         timeout: cdk.Duration.seconds(3),
         runtime: lambda.Runtime.NODEJS_16_X,
         handler: "main",
-        entry: path.join(__dirname, `/../lambda/invokeStepFunction/index.ts`),
+        entry: path.join(
+          __dirname,
+          `/../lambda/comment/invokeStepFunction/index.ts`
+        ),
         environment: {
           // Pass in the comment state machine to invoke
           STATE_MACHINE_ARN: stateMachineArn,
