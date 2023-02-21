@@ -1,6 +1,6 @@
 import { main } from ".";
 
-import { S3 } from "../../__mocks__/aws-sdk";
+import { S3 } from "../../../__mocks__/aws-sdk";
 import { outputXml, testXml } from "./testXml";
 import * as xml2js from "xml2js";
 

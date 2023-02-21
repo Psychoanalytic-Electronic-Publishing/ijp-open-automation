@@ -1,6 +1,6 @@
 import { main } from ".";
 
-import { S3 } from "../../__mocks__/aws-sdk";
+import { S3 } from "../../../__mocks__/aws-sdk";
 
 const s3 = new S3();
 

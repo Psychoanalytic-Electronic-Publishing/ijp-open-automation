@@ -23,7 +23,10 @@ export class IJPOWithdrawals extends Construct {
       memorySize: 256,
       runtime: lambda.Runtime.NODEJS_16_X,
       handler: "main",
-      entry: path.join(__dirname, `/../lambda/fetchFileKeys/index.ts`),
+      entry: path.join(
+        __dirname,
+        `/../lambda/withdrawals/fetchFileKeys/index.ts`
+      ),
       environment: {
         BUCKET_NAME: process.env.BUCKET_NAME,
         S3_PDF_PREFIX: process.env.S3_PDF_PREFIX,
@@ -50,7 +53,10 @@ export class IJPOWithdrawals extends Construct {
         timeout: cdk.Duration.seconds(5),
         runtime: lambda.Runtime.NODEJS_16_X,
         handler: "main",
-        entry: path.join(__dirname, `/../lambda/markFilesAsRemoved/index.ts`),
+        entry: path.join(
+          __dirname,
+          `/../lambda/withdrawals/markFilesAsRemoved/index.ts`
+        ),
         environment: {
           BUCKET_NAME: process.env.BUCKET_NAME,
         },
@@ -80,7 +86,7 @@ export class IJPOWithdrawals extends Construct {
         handler: "main",
         entry: path.join(
           __dirname,
-          `/../lambda/generateWithdrawalXML/index.ts`
+          `/../lambda/withdrawals/generateWithdrawalXML/index.ts`
         ),
         environment: {
           BUCKET_NAME: process.env.BUCKET_NAME,
