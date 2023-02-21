@@ -11,7 +11,8 @@ export class IJPOWithdrawals extends Construct {
     if (
       !process.env.BUCKET_NAME ||
       !process.env.S3_PDF_PREFIX ||
-      !process.env.S3_XML_PREFIX
+      !process.env.S3_XML_PREFIX ||
+      !process.env.REMOVAL_MESSAGE
     ) {
       throw new Error("Missing one or more required environment variable");
     }
@@ -68,5 +69,32 @@ export class IJPOWithdrawals extends Construct {
 
     // Attach the policy to the Lambda
     markFilesAsRemoved.addToRolePolicy(markFilesAsRemovedS3Policy);
+
+    const generateWithdrawalXML = new NodejsFunction(
+      this,
+      "generate-withdrawal-xml",
+      {
+        functionName: `${id}-generate-withdrawal-xml`,
+        timeout: cdk.Duration.seconds(5),
+        runtime: lambda.Runtime.NODEJS_16_X,
+        handler: "main",
+        entry: path.join(
+          __dirname,
+          `/../lambda/generateWithdrawalXML/index.ts`
+        ),
+        environment: {
+          BUCKET_NAME: process.env.BUCKET_NAME,
+          REMOVAL_MESSAGE: process.env.REMOVAL_MESSAGE,
+        },
+      }
+    );
+
+    const generateWithdrawalXMLS3Policy = new iam.PolicyStatement({
+      actions: ["s3:putObject", "s3:putObjectAcl", "s3:getObject"],
+      resources: [`arn:aws:s3:::${process.env.BUCKET_NAME}/*`],
+    });
+
+    // Attach the policy to the Lambda
+    generateWithdrawalXML.addToRolePolicy(generateWithdrawalXMLS3Policy);
   }
 }
