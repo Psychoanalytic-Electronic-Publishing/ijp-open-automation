@@ -171,6 +171,7 @@ export class CommentStepFunction extends Construct {
           sfn.Condition.stringEquals("$.action", "comment"),
           disqusCommentFlow
         )
+        .otherwise(new sfn.Succeed(this, "No action required"))
     );
 
     this.StateMachine = new sfn.StateMachine(this, "StateMachine", {
