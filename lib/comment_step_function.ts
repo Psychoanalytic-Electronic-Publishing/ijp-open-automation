@@ -115,55 +115,50 @@ export class CommentStepFunction extends Construct {
       }
     );
 
-    // Define end state
-    const end = new sfn.Succeed(this, "Success");
+    // Define parallel states for each action with a single branch to simplfiy error handling
+    const disqusCommentContainer = new sfn.Parallel(this, "Post to Disqus", {
+      resultPath: "$.Payload",
+    });
+
+    const withdrawalContainer = new sfn.Parallel(this, "Withdraw article", {
+      resultPath: "$.Payload",
+    });
 
     // Define withdrawal flow
-    const withdrawArticleFlow = fetchFileKeysTask
+    const withdrawArticleFlow = disqusCommentContainer
+      .branch(
+        fetchFileKeysTask
+          .next(markFilesAsRemovedTask)
+          .next(generateWithdrawalXMLTask)
+      )
       .addCatch(notifyUnrecoverableTask, {
         resultPath: "$.error",
-      })
-      .next(
-        markFilesAsRemovedTask.addCatch(notifyUnrecoverableTask, {
-          resultPath: "$.error",
-        })
-      )
-      .next(
-        generateWithdrawalXMLTask.addCatch(notifyUnrecoverableTask, {
-          resultPath: "$.error",
-        })
-      )
-      .next(end);
+      });
 
     // Define comment flow
-    const disqusCommentFlow = hasIJPOConsent
-      .when(
-        sfn.Condition.booleanEquals("$.consent", true),
-        getArticleFromSolrTask
-          .addCatch(notifyUnrecoverableTask, {
-            resultPath: "$.error",
-          })
-          .next(
+    const disqusCommentFlow = withdrawalContainer
+      .branch(
+        hasIJPOConsent.when(
+          sfn.Condition.booleanEquals("$.consent", true),
+          getArticleFromSolrTask.next(
             isVersionLive
               .when(
                 sfn.Condition.stringEquals("$.articleId", ""),
                 wait1Day.next(getArticleFromSolrTask)
               )
               .otherwise(
-                postDisqusCommentTask
-                  .addRetry({
-                    errors: ["DisqusTimeout"],
-                    interval: cdk.Duration.seconds(5),
-                    maxAttempts: 3,
-                  })
-                  .addCatch(notifyUnrecoverableTask, {
-                    resultPath: "$.error",
-                  })
-                  .next(end)
+                postDisqusCommentTask.addRetry({
+                  errors: ["DisqusTimeout"],
+                  interval: cdk.Duration.seconds(5),
+                  maxAttempts: 3,
+                })
               )
           )
+        )
       )
-      .otherwise(end);
+      .addCatch(notifyUnrecoverableTask, {
+        resultPath: "$.error",
+      });
 
     // Create step function definition
     const defintion = parseEmailNotificationTask.next(
@@ -176,7 +171,6 @@ export class CommentStepFunction extends Construct {
           sfn.Condition.stringEquals("$.action", "comment"),
           disqusCommentFlow
         )
-        .otherwise(end)
     );
 
     this.StateMachine = new sfn.StateMachine(this, "StateMachine", {
