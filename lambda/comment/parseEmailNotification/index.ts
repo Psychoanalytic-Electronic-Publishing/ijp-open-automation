@@ -27,7 +27,8 @@ export async function main(
 ): Promise<Response | undefined> {
   console.log("Event", event);
 
-  if (!isSenderAllowed(event.mail.source)) return;
+  if (!isSenderAllowed(event.mail.source))
+    throw new Error("Sender not allowed");
 
   if (event.notificationType !== "Received") return;
 
@@ -36,6 +37,8 @@ export async function main(
     skipImageLinks: true,
     skipTextToHtml: true,
   });
+
+  if (!subject) throw new Error("No subject");
 
   if (!to) throw new Error("No from address");
 
