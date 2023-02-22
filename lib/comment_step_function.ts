@@ -139,7 +139,7 @@ export class CommentStepFunction extends Construct {
     const disqusCommentFlow = withdrawalContainer
       .branch(
         hasIJPOConsent.when(
-          sfn.Condition.booleanEquals("$.consent", true),
+          sfn.Condition.stringMatches("$.subject", "*@no"),
           getArticleFromSolrTask.next(
             isVersionLive
               .when(

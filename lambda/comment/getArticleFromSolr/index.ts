@@ -2,7 +2,7 @@ import axios from "axios";
 import { URLSearchParams } from "url";
 
 interface Event {
-  manuscriptId: string;
+  subject: string;
 }
 
 interface Document {
@@ -25,8 +25,10 @@ export async function main(event: Event) {
     "x-api-authorize": process.env.PEP_API_KEY,
   };
 
+  const manuscriptId = event.subject.split("@")[0];
+
   const data = {
-    smarttext: `meta_xml:"${event.manuscriptId}"`,
+    smarttext: `meta_xml:"${manuscriptId}"`,
   };
 
   const searchParams = new URLSearchParams(data);
@@ -39,7 +41,7 @@ export async function main(event: Event) {
 
   if (response.data.documentList.responseSet.length > 1) {
     throw new Error(
-      `Multiple articles found for manuscript ID ${event.manuscriptId}`
+      `Multiple articles found for manuscript ID ${manuscriptId}`
     );
   }
 

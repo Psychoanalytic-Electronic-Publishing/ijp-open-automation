@@ -39,13 +39,6 @@ export async function main(
 
   if (!to) throw new Error("No from address");
 
-  // const splitSubject = subject.split("@");
-
-  // const manuscriptId = splitSubject[0];
-  // const optOutOfIJPO = splitSubject[1].toLowerCase();
-
-  // const consent = optOutOfIJPO === "yes" ? false : true;
-
   const action = event.mail.destination[0].split("@")[0];
 
   return {
