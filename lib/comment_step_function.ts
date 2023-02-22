@@ -3,9 +3,11 @@ import { Construct } from "constructs";
 import * as sfn from "aws-cdk-lib/aws-stepfunctions";
 import * as tasks from "aws-cdk-lib/aws-stepfunctions-tasks";
 import { CommentLambdas } from "./comment_lambdas";
+import { IJPOWithdrawals } from "./ijpo_withdrawals";
 
 interface Params {
   commentLambdas: CommentLambdas;
+  withdrawalLambdas: IJPOWithdrawals;
 }
 export class CommentStepFunction extends Construct {
   public StateMachine: sfn.StateMachine;
@@ -13,6 +15,7 @@ export class CommentStepFunction extends Construct {
   constructor(scope: Construct, id: string, params: Params) {
     super(scope, id);
 
+    // Destructure the lambdas from the params
     const {
       commentLambdas: {
         parseEmailNotification,
@@ -20,7 +23,56 @@ export class CommentStepFunction extends Construct {
         postDisqusComment,
         sendEmailNotification,
       },
+      withdrawalLambdas: {
+        fetchFileKeys,
+        markFilesAsRemoved,
+        generateWithdrawalXML,
+      },
     } = params;
+
+    // Define flow routing task
+    const routeToFlowTask = new sfn.Choice(
+      this,
+      "Route to correct flow based on action"
+    );
+
+    // Define notification task
+    const notifyUnrecoverableTask = new tasks.LambdaInvoke(
+      this,
+      "Send error email",
+      {
+        lambdaFunction: sendEmailNotification,
+        outputPath: "$.Payload",
+      }
+    );
+
+    // Define withdrawal tasks
+    const fetchFileKeysTask = new tasks.LambdaInvoke(
+      this,
+      "Fetch file keys for article",
+      {
+        lambdaFunction: fetchFileKeys,
+        outputPath: "$.Payload",
+      }
+    );
+
+    const markFilesAsRemovedTask = new tasks.LambdaInvoke(
+      this,
+      "Mark files as removed",
+      {
+        lambdaFunction: markFilesAsRemoved,
+        outputPath: "$.Payload",
+      }
+    );
+
+    const generateWithdrawalXMLTask = new tasks.LambdaInvoke(
+      this,
+      "Generate and upload withdrawal XML",
+      {
+        lambdaFunction: generateWithdrawalXML,
+        outputPath: "$.Payload",
+      }
+    );
 
     const parseEmailNotificationTask = new tasks.LambdaInvoke(
       this,
@@ -63,51 +115,69 @@ export class CommentStepFunction extends Construct {
       }
     );
 
-    const notifyUnrecoverableTask = new tasks.LambdaInvoke(
-      this,
-      "Send error email",
-      {
-        lambdaFunction: sendEmailNotification,
-        outputPath: "$.Payload",
-      }
-    );
-
+    // Define end state
     const end = new sfn.Succeed(this, "Success");
 
-    const defintion = parseEmailNotificationTask
+    // Define withdrawal flow
+    const withdrawArticleFlow = fetchFileKeysTask
       .addCatch(notifyUnrecoverableTask, {
         resultPath: "$.error",
       })
       .next(
-        hasIJPOConsent
-          .when(
-            sfn.Condition.booleanEquals("$.consent", true),
-            getArticleFromSolrTask
-              .addCatch(notifyUnrecoverableTask, {
-                resultPath: "$.error",
-              })
-              .next(
-                isVersionLive
-                  .when(
-                    sfn.Condition.stringEquals("$.articleId", ""),
-                    wait1Day.next(getArticleFromSolrTask)
-                  )
-                  .otherwise(
-                    postDisqusCommentTask
-                      .addRetry({
-                        errors: ["DisqusTimeout"],
-                        interval: cdk.Duration.seconds(5),
-                        maxAttempts: 3,
-                      })
-                      .addCatch(notifyUnrecoverableTask, {
-                        resultPath: "$.error",
-                      })
-                      .next(end)
-                  )
+        markFilesAsRemovedTask.addCatch(notifyUnrecoverableTask, {
+          resultPath: "$.error",
+        })
+      )
+      .next(
+        generateWithdrawalXMLTask.addCatch(notifyUnrecoverableTask, {
+          resultPath: "$.error",
+        })
+      )
+      .next(end);
+
+    // Define comment flow
+    const disqusCommentFlow = hasIJPOConsent
+      .when(
+        sfn.Condition.booleanEquals("$.consent", true),
+        getArticleFromSolrTask
+          .addCatch(notifyUnrecoverableTask, {
+            resultPath: "$.error",
+          })
+          .next(
+            isVersionLive
+              .when(
+                sfn.Condition.stringEquals("$.articleId", ""),
+                wait1Day.next(getArticleFromSolrTask)
+              )
+              .otherwise(
+                postDisqusCommentTask
+                  .addRetry({
+                    errors: ["DisqusTimeout"],
+                    interval: cdk.Duration.seconds(5),
+                    maxAttempts: 3,
+                  })
+                  .addCatch(notifyUnrecoverableTask, {
+                    resultPath: "$.error",
+                  })
+                  .next(end)
               )
           )
-          .otherwise(end)
-      );
+      )
+      .otherwise(end);
+
+    // Create step function definition
+    const defintion = parseEmailNotificationTask.next(
+      routeToFlowTask
+        .when(
+          sfn.Condition.stringEquals("$.action", "withdraw"),
+          withdrawArticleFlow
+        )
+        .when(
+          sfn.Condition.stringEquals("$.action", "comment"),
+          disqusCommentFlow
+        )
+        .otherwise(end)
+    );
 
     this.StateMachine = new sfn.StateMachine(this, "StateMachine", {
       definition: defintion,
