@@ -16,17 +16,17 @@ export class IJPOAutomationStack extends cdk.Stack {
 
     const emailIngestion = new EmailIngestion(this, id + "-Email");
 
+    const withdrawalLambdas = new IJPOWithdrawals(this, id + "-Withdrawals");
     const commentLambdas = new CommentLambdas(this, id + "-Comment");
 
-    const commentStepFunction = new CommentStepFunction(this, id + "-SF", {
+    const automationStepFunction = new CommentStepFunction(this, id + "-SF", {
       commentLambdas,
+      withdrawalLambdas,
     });
 
     const invoke = new InvokeStepFunction(this, id + "-Invoke", {
-      stateMachineArn: commentStepFunction.StateMachine.stateMachineArn,
+      stateMachineArn: automationStepFunction.StateMachine.stateMachineArn,
     });
-
-    new IJPOWithdrawals(this, id + "-Withdrawals");
 
     // Trigger step function invocation lambda from inbound email notification
     emailIngestion.Topic.addSubscription(

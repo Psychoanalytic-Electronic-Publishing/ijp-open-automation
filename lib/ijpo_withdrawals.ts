@@ -5,6 +5,10 @@ import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as path from "path";
 import * as iam from "aws-cdk-lib/aws-iam";
 export class IJPOWithdrawals extends Construct {
+  public fetchFileKeys: NodejsFunction;
+  public markFilesAsRemoved: NodejsFunction;
+  public generateWithdrawalXML: NodejsFunction;
+
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
@@ -102,5 +106,9 @@ export class IJPOWithdrawals extends Construct {
 
     // Attach the policy to the Lambda
     generateWithdrawalXML.addToRolePolicy(generateWithdrawalXMLS3Policy);
+
+    this.fetchFileKeys = fetchFileKeys;
+    this.markFilesAsRemoved = markFilesAsRemoved;
+    this.generateWithdrawalXML = generateWithdrawalXML;
   }
 }
