@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 import "source-map-support/register";
 import * as cdk from "aws-cdk-lib";
-import { DisqusCommentServiceStack } from "../lib/stack";
+import { IJPOAutomationStack } from "../lib/stack";
 
 const app = new cdk.App();
-new DisqusCommentServiceStack(app, "DisqusCommentServiceStack", {
+new IJPOAutomationStack(app, "IJPO-Automation", {
   env: {
     region: "us-east-1",
   },

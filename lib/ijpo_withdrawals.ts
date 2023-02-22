@@ -25,7 +25,7 @@ export class IJPOWithdrawals extends Construct {
       handler: "main",
       entry: path.join(
         __dirname,
-        `/../lambda/withdrawals/fetchFileKeys/index.ts`
+        `/../lambda/withdrawal/fetchFileKeys/index.ts`
       ),
       environment: {
         BUCKET_NAME: process.env.BUCKET_NAME,
@@ -55,7 +55,7 @@ export class IJPOWithdrawals extends Construct {
         handler: "main",
         entry: path.join(
           __dirname,
-          `/../lambda/withdrawals/markFilesAsRemoved/index.ts`
+          `/../lambda/withdrawal/markFilesAsRemoved/index.ts`
         ),
         environment: {
           BUCKET_NAME: process.env.BUCKET_NAME,
@@ -86,7 +86,7 @@ export class IJPOWithdrawals extends Construct {
         handler: "main",
         entry: path.join(
           __dirname,
-          `/../lambda/withdrawals/generateWithdrawalXML/index.ts`
+          `/../lambda/withdrawal/generateWithdrawalXML/index.ts`
         ),
         environment: {
           BUCKET_NAME: process.env.BUCKET_NAME,

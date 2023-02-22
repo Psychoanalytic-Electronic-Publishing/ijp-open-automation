@@ -8,14 +8,19 @@ import { EmailIngestion } from "./ijp_email_ingestion";
 import { InvokeStepFunction } from "./invoke_step_function";
 import * as subs from "aws-cdk-lib/aws-sns-subscriptions";
 import { IJPOWithdrawals } from "./ijpo_withdrawals";
+import { CommentLambdas } from "./comment_lambdas";
 
-export class DisqusCommentServiceStack extends cdk.Stack {
+export class IJPOAutomationStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     const emailIngestion = new EmailIngestion(this, id + "-Email");
 
-    const commentStepFunction = new CommentStepFunction(this, id + "-Comment");
+    const commentLambdas = new CommentLambdas(this, id + "-Comment");
+
+    const commentStepFunction = new CommentStepFunction(this, id + "-SF", {
+      commentLambdas,
+    });
 
     const invoke = new InvokeStepFunction(this, id + "-Invoke", {
       stateMachineArn: commentStepFunction.StateMachine.stateMachineArn,

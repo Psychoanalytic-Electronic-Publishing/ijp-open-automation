@@ -1,8 +1,8 @@
 {
-  "name": "disqus_comment_service",
+  "name": "ijpo_automation_service",
   "version": "0.1.0",
   "bin": {
-    "disqus_comment_service": "bin/disqus_comment_service.js"
+    "disqus_comment_service": "bin/ijpo_automation_service.js"
   },
   "scripts": {
     "build": "tsc",
