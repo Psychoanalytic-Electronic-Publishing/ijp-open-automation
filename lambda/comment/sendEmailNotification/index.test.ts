@@ -1,5 +1,5 @@
 import { main } from ".";
-import { SES } from "../../__mocks__/aws-sdk";
+import { SES } from "../../../__mocks__/aws-sdk";
 
 const ses = new SES();
 

@@ -158,11 +158,12 @@ There are currently 9 required environment variables:
 3. `DISQUS_FORUM` - Disqus shortname
 4. `DISQUS_PUBLIC` - Disqus application public key
 5. `DISQUS_SECRET` - Disqus application secret key
-6. `COMMENT_EMAIL_ADDRESS` - Internal email address to receive IJPO letters and send email notifications
+6. `COMMENT_EMAIL_ADDRESS` - Internal email address to receive IJPO letters
 7. `EMAIL_NOTIFICATION_RECIPIENT` - Email notification recipient
 8. `PEP_API_KEY` - PEP API Key
 9. `PEP_API_BASE_URL` - PEP API base URL
 10. `EMAIL_WHITELIST` - comma-delimited string of email addresses or domains to allow actions from
+11. `WITHDRAW_EMAIL_ADDRESS` - Internal email address to recieve IJPO withdrawal requests
 
 ### Local Configuration
 
@@ -221,7 +222,7 @@ If your AWS SES is still in sandbox mode, you'll need to verify the external `EM
 
 ### Receiving emails
 
-To enable email receiving on your `COMMENT_EMAIL_ADDRESS`, create an `MX` record with the value `10 inbound-smtp.region.amazonaws.com` where `region` is AWS region you have configured your SES identity on.
+To enable email receiving on the domain of your `COMMENT_EMAIL_ADDRESS`, create an `MX` record with the value `10 inbound-smtp.region.amazonaws.com` where `region` is AWS region you have configured your SES identity on.
 
 See the "Publising an MX record for AWS SES email receiving" on AWS for more information:
 https://docs.aws.amazon.com/ses/latest/dg/receiving-email-mx-record.html

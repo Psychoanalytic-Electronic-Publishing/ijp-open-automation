@@ -7,9 +7,9 @@ interface SESNotification extends SESMessage {
 }
 
 interface Response {
-  manuscriptId: string;
-  consent: boolean;
-  text: string;
+  action: string;
+  subject?: string;
+  text?: string;
 }
 
 const isSenderAllowed = (email: string) => {
@@ -27,28 +27,26 @@ export async function main(
 ): Promise<Response | undefined> {
   console.log("Event", event);
 
-  if (!isSenderAllowed(event.mail.source)) return;
+  if (!isSenderAllowed(event.mail.source))
+    throw new Error("Sender not allowed");
 
   if (event.notificationType !== "Received") return;
 
-  const { subject, text } = await simpleParser(event.content, {
+  const { subject, text, to } = await simpleParser(event.content, {
     skipHtmlToText: true,
     skipImageLinks: true,
     skipTextToHtml: true,
   });
 
-  if (!subject || !text) return;
+  if (!subject) throw new Error("No subject");
 
-  const splitSubject = subject.split("@");
+  if (!to) throw new Error("No from address");
 
-  const manuscriptId = splitSubject[0];
-  const optOutOfIJPO = splitSubject[1].toLowerCase();
-
-  const consent = optOutOfIJPO === "yes" ? false : true;
+  const action = event.mail.destination[0].split("@")[0];
 
   return {
-    manuscriptId,
-    consent,
+    action,
+    subject,
     text,
   };
 }

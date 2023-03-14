@@ -6,8 +6,10 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe("getArticleFromSolr", () => {
   const event = {
-    manuscriptId: "abc123",
+    subject: "abc123@no",
   };
+
+  const manuscriptId = event.subject.split("@")[0];
 
   beforeEach(() => {
     process.env.PEP_API_BASE_URL = "https://test.com/v2";
@@ -29,7 +31,7 @@ describe("getArticleFromSolr", () => {
 
     const response = await main(event);
 
-    const url = `${process.env.PEP_API_BASE_URL}/Database/Search?smarttext=meta_xml%3A%22${event.manuscriptId}%22`;
+    const url = `${process.env.PEP_API_BASE_URL}/Database/Search?smarttext=meta_xml%3A%22${manuscriptId}%22`;
     const headers = {
       "client-id": "1",
       "x-api-authorize": process.env.PEP_API_KEY,
@@ -60,7 +62,7 @@ describe("getArticleFromSolr", () => {
     });
 
     await expect(main(event)).rejects.toThrow(
-      `Multiple articles found for manuscript ID ${event.manuscriptId}`
+      `Multiple articles found for manuscript ID ${manuscriptId}`
     );
   });
 
