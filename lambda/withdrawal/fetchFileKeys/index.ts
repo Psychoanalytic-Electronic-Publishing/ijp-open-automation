@@ -46,7 +46,7 @@ export const listAllS3 = (
 };
 
 interface Event {
-  articleId: string;
+  subject: string;
 }
 
 export async function main(event: Event) {
@@ -59,13 +59,13 @@ export async function main(event: Event) {
   }
 
   const xmlKeys = await listAllS3(
-    event.articleId,
+    event.subject,
     process.env.BUCKET_NAME,
     process.env.S3_XML_PREFIX
   );
 
   const pdfKeys = await listAllS3(
-    event.articleId,
+    event.subject,
     process.env.BUCKET_NAME,
     process.env.S3_PDF_PREFIX
   );

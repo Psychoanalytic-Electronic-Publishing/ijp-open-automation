@@ -39,7 +39,7 @@ const pdfResults = [
 
 describe("removeArticlesFromS3", () => {
   const eventStub = {
-    articleId: "1234",
+    subject: "1234",
   };
 
   beforeEach(() => {
