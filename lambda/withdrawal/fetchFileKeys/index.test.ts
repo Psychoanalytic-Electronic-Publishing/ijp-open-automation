@@ -39,7 +39,7 @@ const pdfResults = [
 
 describe("removeArticlesFromS3", () => {
   const eventStub = {
-    subject: "1234",
+    subject: "1234A",
   };
 
   beforeEach(() => {
@@ -93,6 +93,7 @@ describe("removeArticlesFromS3", () => {
     const result = await main(eventStub);
 
     expect(result).toEqual({
+      articleId: "1234A",
       keys: [
         "xml/1234C.xml",
         "xml/1234B.xml",
@@ -149,6 +150,7 @@ describe("removeArticlesFromS3", () => {
     const result = await main(eventStub);
 
     expect(result).toEqual({
+      articleId: "1234A",
       keys: [
         "xml/1234C.xml",
         "xml/1234B.xml",

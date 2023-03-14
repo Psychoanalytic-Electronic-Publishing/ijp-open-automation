@@ -10,7 +10,7 @@ export const getOriginalXmlAsObject = async (
   const originalXml = await s3
     .getObject({
       Bucket: bucket,
-      Key: articleKey,
+      Key: articleKey.replace("(bKBD3).xml", "(bRemoved).xml"),
     })
     .promise();
 

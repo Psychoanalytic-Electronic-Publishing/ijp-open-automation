@@ -22,6 +22,11 @@ describe("generateWithdrawalXML", () => {
     };
   });
 
+  const event = {
+    articleId: "1234A",
+    keys: ["test/1234A(bKBD3).xml"],
+  };
+
   beforeEach(() => {
     process.env.BUCKET_NAME = "test-bucket";
     process.env.REMOVAL_MESSAGE = "Test removal message";
@@ -33,11 +38,9 @@ describe("generateWithdrawalXML", () => {
   it("throws an error when BUCKET_NAME variable is not set", async () => {
     process.env.BUCKET_NAME = "";
 
-    await expect(
-      main({
-        articleKey: "test/1234A(bKBD3).xml",
-      })
-    ).rejects.toThrow("Missing one or more expected environment variable");
+    await expect(main(event)).rejects.toThrow(
+      "Missing one or more expected environment variable"
+    );
 
     expect(s3.getObject).toHaveBeenCalledTimes(0);
     expect(s3.putObject).toHaveBeenCalledTimes(0);
@@ -46,25 +49,21 @@ describe("generateWithdrawalXML", () => {
   it("throws an error when REMOVAL_MESSAGE variable is not set", async () => {
     process.env.REMOVAL_MESSAGE = "";
 
-    await expect(
-      main({
-        articleKey: "test/1234A(bKBD3).xml",
-      })
-    ).rejects.toThrow("Missing one or more expected environment variable");
+    await expect(main(event)).rejects.toThrow(
+      "Missing one or more expected environment variable"
+    );
 
     expect(s3.getObject).toHaveBeenCalledTimes(0);
     expect(s3.putObject).toHaveBeenCalledTimes(0);
   });
 
   it("fetches the article XML file from S3", async () => {
-    await main({
-      articleKey: "test/1234A(bKBD3).xml",
-    });
+    await main(event);
 
     expect(s3.getObject).toHaveBeenCalledTimes(1);
     expect(s3.getObject).toHaveBeenCalledWith({
       Bucket: process.env.BUCKET_NAME,
-      Key: "test/1234A(bKBD3).xml",
+      Key: "test/1234A(bRemoved).xml",
     });
   });
 
@@ -79,20 +78,25 @@ describe("generateWithdrawalXML", () => {
       };
     });
 
-    await expect(
-      main({
-        articleKey: "test/1234A(bKBD3).xml",
-      })
-    ).rejects.toThrow("Original article XML file is empty");
+    await expect(main(event)).rejects.toThrow(
+      "Original article XML file is empty"
+    );
 
     expect(s3.getObject).toHaveBeenCalledTimes(1);
     expect(s3.putObject).toHaveBeenCalledTimes(0);
   });
 
+  it("throws an error if article ID not found in keys", async () => {
+    const event = {
+      articleId: "1234B",
+      keys: ["test/1234A(bKBD3).xml"],
+    };
+
+    await expect(main(event)).rejects.toThrow("No matching article key found");
+  });
+
   it("creates a new XML file with the removal message", async () => {
-    await main({
-      articleKey: "test/1234A(bKBD3).xml",
-    });
+    await main(event);
 
     // Run the expected XML string through the parser and builder to normalise formatting for test
     const parsedOutputXml = await parser.parseStringPromise(outputXml);

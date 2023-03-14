@@ -6,7 +6,8 @@ import { saveToS3 } from "./saveToS3";
 const s3 = new AWS.S3();
 
 interface Event {
-  articleKey: string;
+  articleId: string;
+  keys: string[];
 }
 
 const parser = new xml2js.Parser();
@@ -19,7 +20,13 @@ export async function main(event: Event) {
     throw new Error("Missing one or more expected environment variable");
   }
 
-  const { articleKey } = event;
+  const { articleId, keys } = event;
+
+  const articleKey = keys.find((key) => key.includes(articleId));
+
+  if (!articleKey) {
+    throw new Error("No matching article key found");
+  }
 
   const parsedXml = await getOriginalXmlAsObject(
     parser,

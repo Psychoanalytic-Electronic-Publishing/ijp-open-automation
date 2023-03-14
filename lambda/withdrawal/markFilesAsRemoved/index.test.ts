@@ -73,9 +73,12 @@ describe("removeArticlesFromS3", () => {
     ]);
   });
 
-  it("returns the provided articleId", () => {
+  it("returns the provided articleId and filtered keys", () => {
     expect(main(eventStub)).resolves.toEqual({
       articleId: eventStub.articleId,
+      keys: eventStub.keys.filter((key) => {
+        return !key.includes("(bEXP_ARCH1).xml");
+      }),
     });
   });
 });

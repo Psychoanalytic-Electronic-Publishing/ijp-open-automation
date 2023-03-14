@@ -26,5 +26,6 @@ export async function main(event: Event) {
 
   return {
     articleId,
+    keys: filteredKeys,
   };
 }

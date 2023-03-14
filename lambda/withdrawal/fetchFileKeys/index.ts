@@ -58,14 +58,16 @@ export async function main(event: Event) {
     throw new Error("Missing one or more required environment variable");
   }
 
+  const documentId = event.subject.slice(0, -1);
+
   const xmlKeys = await listAllS3(
-    event.subject,
+    documentId,
     process.env.BUCKET_NAME,
     process.env.S3_XML_PREFIX
   );
 
   const pdfKeys = await listAllS3(
-    event.subject,
+    documentId,
     process.env.BUCKET_NAME,
     process.env.S3_PDF_PREFIX
   );
@@ -81,5 +83,6 @@ export async function main(event: Event) {
 
   return {
     keys: filteredKeys,
+    articleId: event.subject,
   };
 }
