@@ -3,7 +3,7 @@ jest.mock("uuid", () => ({ v4: () => MOCK_UUID }));
 
 import { SNSEvent } from "aws-lambda";
 import { main } from ".";
-import { StepFunctions } from "../../__mocks__/aws-sdk";
+import { StepFunctions } from "../../../__mocks__/aws-sdk";
 
 const sf = new StepFunctions();
 
