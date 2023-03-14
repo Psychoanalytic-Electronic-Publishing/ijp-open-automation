@@ -47,6 +47,11 @@ export class CommentStepFunction extends Construct {
     );
 
     // Define withdrawal tasks
+    const isAnIJPOArticle = new sfn.Choice(
+      this,
+      "Does the article ID contain IJPOPEN?"
+    );
+
     const fetchFileKeysTask = new tasks.LambdaInvoke(
       this,
       "Fetch file keys for article",
@@ -127,9 +132,12 @@ export class CommentStepFunction extends Construct {
     // Define withdrawal flow
     const withdrawArticleFlow = withdrawalContainer
       .branch(
-        fetchFileKeysTask
-          .next(markFilesAsRemovedTask)
-          .next(generateWithdrawalXMLTask)
+        isAnIJPOArticle.when(
+          sfn.Condition.stringMatches("$.subject", "*IJPOPEN*"),
+          fetchFileKeysTask
+            .next(markFilesAsRemovedTask)
+            .next(generateWithdrawalXMLTask)
+        )
       )
       .addCatch(notifyUnrecoverableTask, {
         resultPath: "$.error",
