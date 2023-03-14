@@ -125,7 +125,7 @@ export class CommentStepFunction extends Construct {
     });
 
     // Define withdrawal flow
-    const withdrawArticleFlow = disqusCommentContainer
+    const withdrawArticleFlow = withdrawalContainer
       .branch(
         fetchFileKeysTask
           .next(markFilesAsRemovedTask)
@@ -136,7 +136,7 @@ export class CommentStepFunction extends Construct {
       });
 
     // Define comment flow
-    const disqusCommentFlow = withdrawalContainer
+    const disqusCommentFlow = disqusCommentContainer
       .branch(
         hasIJPOConsent.when(
           sfn.Condition.stringMatches("$.subject", "*@no"),
