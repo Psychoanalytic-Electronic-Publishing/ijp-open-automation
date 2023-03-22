@@ -12,7 +12,8 @@ interface Event {
 
 const parser = new xml2js.Parser();
 const builder = new xml2js.Builder({
-  doctype: { pepkbd3: "http://peparchive.org/pepa1dtd/pepkbd3.dtd" },
+  doctype: { sysID: "http://peparchive.org/pepa1dtd/pepkbd3.dtd" },
+  xmldec: { version: "1.0", encoding: "UTF-8" },
 });
 
 export async function main(event: Event) {
@@ -36,6 +37,8 @@ export async function main(event: Event) {
   );
 
   delete parsedXml.pepkbd3.bib;
+  delete parsedXml.pepkbd3.appxs;
+
   parsedXml.pepkbd3.body = [
     {
       p: process.env.REMOVAL_MESSAGE,

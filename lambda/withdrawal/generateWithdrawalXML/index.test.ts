@@ -6,7 +6,8 @@ import * as xml2js from "xml2js";
 
 const parser = new xml2js.Parser();
 const builder = new xml2js.Builder({
-  doctype: { pepkbd3: "http://peparchive.org/pepa1dtd/pepkbd3.dtd" },
+  doctype: { sysID: "http://peparchive.org/pepa1dtd/pepkbd3.dtd" },
+  xmldec: { version: "1.0", encoding: "UTF-8" },
 });
 
 const s3 = new S3();
@@ -101,6 +102,8 @@ describe("generateWithdrawalXML", () => {
     // Run the expected XML string through the parser and builder to normalise formatting for test
     const parsedOutputXml = await parser.parseStringPromise(outputXml);
     const newXml = builder.buildObject(parsedOutputXml);
+
+    console.log("NEW XML", newXml);
 
     expect(s3.putObject).toHaveBeenCalledTimes(1);
     expect(s3.putObject).toHaveBeenCalledWith({

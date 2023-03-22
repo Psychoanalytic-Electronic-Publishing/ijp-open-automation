@@ -18,6 +18,14 @@ export const testXml = `<?xml version="1.0" encoding="UTF-8" ?>
         <h1 id="H0023">References</h1>
         <be id="B001">The reference from the author's master's thesis is missing as instructed in the instructions for authors.</be>
     </bib>
+    <appxs>
+    <figure id="G002">
+      <graphic source="IJPOPEN.008.0015A.FIG002"/>
+    </figure>
+    <pb>
+      <n>22</n>
+    </pb>
+  </appxs>
 </pepkbd3>
     `;
 
