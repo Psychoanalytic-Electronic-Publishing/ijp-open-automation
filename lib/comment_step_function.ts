@@ -147,7 +147,7 @@ export class CommentStepFunction extends Construct {
     const disqusCommentFlow = disqusCommentContainer
       .branch(
         hasIJPOConsent.when(
-          sfn.Condition.stringMatches("$.subject", "*@no"),
+          sfn.Condition.stringMatches("$.subject", "*@[nN][oO]"),
           getArticleFromSolrTask.next(
             isVersionLive
               .when(
