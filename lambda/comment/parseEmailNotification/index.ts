@@ -46,7 +46,7 @@ export async function main(
 
   return {
     action,
-    subject,
+    subject: subject.toLowerCase(),
     text,
   };
 }
