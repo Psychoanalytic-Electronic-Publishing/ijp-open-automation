@@ -44,9 +44,14 @@ export async function main(
 
   const action = event.mail.destination[0].split("@")[0];
 
+  // Convert everything after @ to lowercase
+  const subjectWithNormalisedConsent = subject.replace(/(@)(\S)/g, (s) =>
+    s.toLowerCase()
+  );
+
   return {
     action,
-    subject,
+    subject: subjectWithNormalisedConsent,
     text,
   };
 }
